@@ -19,23 +19,23 @@ function App() {
 
   const routes = (
     <Switch>
-      <Route path="/niepospolita" exact>
+      <Route path="/" exact>
       <Header />
       <Store />
       </Route>
-      <Route path="/niepospolita/koszyk">
+      <Route path="/koszyk">
       <Header />
       <Cart />
       </Route>
-      <Route path="/niepospolita/zamowienie">
+      <Route path="/zamowienie">
       <Header />
       <Order />
       </Route>
-      <Route path="/niepospolita/admin">
+      <Route path="/admin">
       <AdminHeader />
         <Admin />
       </Route>
-      <Redirect to="/niepospolita" />
+      <Redirect to="/" />
     </Switch>
   );
 
