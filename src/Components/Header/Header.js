@@ -33,7 +33,7 @@ const Header = () => {
 
             </SideDrawer>
         <div className='header'>
-        <Link to= "/" className="logo-link" exact>
+        <Link to= "/admin" className="logo-link" exact>
             <div className='logo title'>
               <img src={Logo} alt="logo" className="logo"></img>
               <span>Niepospolita Restauracja</span>
