@@ -1,0 +1,82 @@
+.order {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+    min-height: 80vh;
+}
+
+.order h1 {
+    padding-bottom: 0.5em;
+    margin: 0;
+    padding-top: 1.5em;
+    /* padding-left: 5%; */
+    text-shadow: 0 0.1em 0.1em black;
+}
+
+.order .card {
+    margin: auto;
+}
+
+.order .item-card {
+    margin: 1em;
+    height: 10vh;
+    /* transition: 1s; */
+    /* text-align: center; */
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: nowrap;
+    color: white;
+    /* flex-direction: column; */
+    /* min-width: 25vw; */
+}
+
+.order .address-street,
+.order .address-city,
+.order .address-city .address-city__zip,
+.order .address-city .address-city__zip .address-city__zip-input
+{
+    display: flex;
+}
+
+.order .address-street,
+.order .address-city {
+    justify-content: space-around;
+}
+
+.order .address-city .address-city__zip {
+    justify-content: end;
+    flex-direction: column;
+}
+
+.order .address-city .address-city__zip .address-city__zip-input {
+    align-items: center;
+    justify-content: center;
+}
+
+.order .address-city .address-city__zip-label label {
+    font-weight: bold;
+}
+
+.order .address-city .address-city__zip .address-city__zip-input div {
+    width: 20%;
+    margin: 1em;
+}
+
+.order .address-city .address-city__zip .address-city__zip-input div label {
+    display: none;
+}
+
+.order .address-street div:nth-child(1),
+.order .address-city .address-city__city
+{
+    width: 50%;
+}
+
+.order .address-street div input,
+.order .address-city div input
+{
+    width: 90%;
+}
+

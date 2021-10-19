@@ -1,0 +1,149 @@
+.header {
+    min-height: 5em;
+    width: 100vw;
+    background-color: rgba(2, 2, 44, 0.527);
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    z-index: 1;
+    justify-content: space-between;
+}
+
+.header .logo-link {
+    margin-left: 3em;
+}
+
+.header .logo {
+    height: 3em;
+    /* margin-left: 3em; */
+}
+
+.header .logo img {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.header .title {
+    display: flex;
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: bold;
+    align-items: center;
+}
+
+.header .title span {
+    padding-left: 1em;
+    text-shadow: 0 0 0.2em;
+    color: #b39809;
+}
+
+.header a {
+    text-decoration: none;
+}
+
+.nav {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 5em;
+}
+
+.nav .main-navigation {
+    padding: 0 0.5em;
+}
+
+.nav li {
+    margin: 0 0.5em;
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: bold;
+    
+}
+
+.nav .main-navigation::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2.2px;
+    background:  #b39809;
+    transition: width .3s;
+}
+
+.nav .main-navigation:hover::after {
+    width: 100%;
+}
+
+.nav li a {
+    text-decoration: none;
+}
+
+.active {
+    border-bottom: 2px solid #b39809;
+}
+
+.nav .user-navigation {
+    color: white;
+}
+
+.nav #auth, .nav #admin {
+    margin-left: 1.5em;
+    padding-left: 1.5em;
+    border-left: 1px solid #b39809;
+}
+
+.main-navigation__menu-btn {
+    width: 3rem;
+    height: 3rem;
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-right: 2rem;
+    cursor: pointer;
+  }
+  
+  .main-navigation__menu-btn span {
+    display: none;
+    width: 3rem;
+    height: 2.5px;
+    background: white;
+    
+  }
+
+  .navigation {
+    display: block;
+  }
+
+@media (max-width: 1000px) {
+    .main-navigation__menu-btn span {
+      display: block;
+    }
+
+    .navigation {
+        display: none;
+      }
+
+      .nav {
+          flex-direction: column;
+      }
+
+      .nav li a {
+          color: #b39809;
+      }
+
+      .nav .main-navigation,
+      .nav .user-navigation {
+        color: #b39809;
+        padding: 1em;
+      }
+
+      .nav #auth, .nav #admin {
+        margin-left: 0.5;
+        padding-left: 0;
+        border-left: none;
+      }
+
+}

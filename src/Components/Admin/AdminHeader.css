@@ -1,0 +1,10 @@
+.admin-header {
+    display: flex;
+    width: 100vw;
+    height: 5em;
+    position: fixed;
+    background-color: black;
+    color: wheat;
+    justify-content: center;
+    align-items: center;
+}
