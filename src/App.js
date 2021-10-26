@@ -15,6 +15,8 @@ import CartContextProvider from './context/cart-context';
 import Cart from './Components/Body/Cart';
 import Order from './Components/Body/Order';
 
+import background from './images/50.jpg'
+
 function App() {
 
   const routes = (
@@ -43,7 +45,7 @@ function App() {
   return (
     <Router>
       <CartContextProvider>
-      <div className="App">
+      <div className="App" style={{backgroundImage: `url(${background})`}}>
         {routes}
       <Footer />
       </div>

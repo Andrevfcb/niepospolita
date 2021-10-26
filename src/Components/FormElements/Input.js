@@ -93,7 +93,7 @@ const Input = props => {
     >
       <label htmlFor={props.id}>{props.label}</label>
       {element}
-      {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
+      {!inputState.isValid && inputState.isTouched && <p style={(props.id === "zipCode_start" || props.id === "zipCode_end") ? {position:'absolute', left: '20%'} : {}}>{props.errorText}</p>}
     </div>
   );
 };

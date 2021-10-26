@@ -10,3 +10,17 @@
     margin: auto;
     border: 1px solid;
 }
+
+@media (max-width: 750px) {
+  .card {
+    width: 90%;
+  }
+}
+
+@media (max-width: 500px) {
+  .card {
+    width: 100%;
+    padding: 0;
+  }
+}
+

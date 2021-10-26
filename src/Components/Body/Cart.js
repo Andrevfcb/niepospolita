@@ -130,11 +130,8 @@ const Cart = () => {
         <React.Fragment>
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
-        <div className="cart" style={{backgroundImage: `url("${process.env.REACT_APP_BACKEND_URL}/uploads/images/10.jpg")`}}>
-                <h1 onClick={
-                    () => {console.log(deliveryHours)
-                    }
-                    }>Twój koszyk</h1>
+        <div className="cart">
+                <h1>Twój koszyk</h1>
                 {cartItems.length > 0 && <Card>
             <div className="cart-products">
             <li className="item-card titles">

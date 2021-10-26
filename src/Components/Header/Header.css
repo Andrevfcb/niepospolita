@@ -8,6 +8,8 @@
     position: fixed;
     z-index: 1;
     justify-content: space-between;
+    font-family: 'Limelight', cursive;
+
 }
 
 .header .logo-link {
@@ -117,30 +119,30 @@
     display: block;
   }
 
-@media (max-width: 1000px) {
-    .main-navigation__menu-btn span {
+@media (max-width: 500px) {
+    .header .main-navigation__menu-btn span {
       display: block;
     }
 
-    .navigation {
+    .header .navigation {
         display: none;
       }
 
-      .nav {
+    #drawer-hook .nav {
           flex-direction: column;
       }
 
-      .nav li a {
+    #drawer-hook .nav li a {
           color: #b39809;
       }
 
-      .nav .main-navigation,
-      .nav .user-navigation {
+    #drawer-hook .nav .main-navigation,
+    #drawer-hook .nav .user-navigation {
         color: #b39809;
         padding: 1em;
       }
 
-      .nav #auth, .nav #admin {
+    .header .nav #auth, .nav #admin {
         margin-left: 0.5;
         padding-left: 0;
         border-left: none;

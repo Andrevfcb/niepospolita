@@ -1,6 +1,7 @@
 body {
   margin: 0;
-  font-family: 'Dosis', sans-serif;
+  /* font-family: 'Dosis', sans-serif; */
+  font-family: 'Poiret One', cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #b39809;
@@ -13,15 +14,18 @@ a {
 
 h1 {
   font-size: 4em;
+  font-family: 'Limelight', cursive;
+
 }
 
 h2 {
   font-size: 2em;
+  font-family: 'Limelight', cursive;
+
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .slide-in-left-enter {
@@ -50,4 +54,10 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 3em;
+  }   
 }

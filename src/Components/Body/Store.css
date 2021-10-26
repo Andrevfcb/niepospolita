@@ -19,8 +19,13 @@
 }
 
 .store-info p {
-    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
+    font-family: 'Poiret One', cursive;
     color: white;
+}
+
+.store-info b {
+    font-family: 'Roboto', sans-serif;
 }
 
 .store h1 {
@@ -51,8 +56,8 @@
 }
 
 .store .item-card {
-    margin: 3em;
-    height: 30vh;
+    margin: 2em 1em;
+    height: 45vh;
     transition: 1s;
     text-align: center;
     display: flex;
@@ -71,6 +76,7 @@
 
 .store .item-card img {
     max-height: 100%;
+    max-width: 100%;
     object-fit: cover;
     border-radius: 5px;
     box-shadow: 0 0 0.2em;
@@ -81,11 +87,18 @@
     height: 30%;
 }
 
+.store .item-card__info button {
+    margin: 0;
+}
+
 .store .item-card__info p {
     width: 100%;
     padding: 0.2em;
+    font-size: 1.3em;
+    margin: 0.5em 0;
     display: flex;
     justify-content: space-evenly;
+    color: white;
 }
 
 .store .categories {

@@ -34,7 +34,7 @@ const ProductCard = ({id, name, price, image, description}) => {
                     }}>Dodaj do koszyka</Button>
                 }
                 {
-                    isInCart(product, cartItems) && <Button onClick={() => goToCartSection()}>Przejdź do koszyka</Button>
+                    isInCart(product, cartItems) && <Button active={true} onClick={() => goToCartSection()}>Przejdź do koszyka</Button>
                 }
                 </div>
             </div>

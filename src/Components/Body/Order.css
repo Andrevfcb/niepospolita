@@ -80,3 +80,8 @@
     width: 90%;
 }
 
+@media (max-width: 750px) {
+    .order button {
+        margin: 0.2em;
+    }
+}

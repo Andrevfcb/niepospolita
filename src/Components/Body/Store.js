@@ -112,7 +112,8 @@ const Store = () => {
     const categoryList = categories.map(cat => <li key={cat.id} onClick={filterByCategory}>{cat.name}</li>)
 
     return (
-        <div className="store" style={{backgroundImage: `url("${process.env.REACT_APP_BACKEND_URL}/uploads/images/10.jpg")`}}>
+        <div className="store"
+        >
             <div className="store-info">
                 <h1
                 onClick={()=>console.log(deliveryAvailable)

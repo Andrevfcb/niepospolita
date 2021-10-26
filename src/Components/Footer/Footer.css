@@ -4,6 +4,7 @@
     justify-content: space-around;
     align-items: center;
     padding: 3em 0;
+    font-family: 'Limelight', cursive;
 }
 
 .footer-menu {
@@ -45,3 +46,8 @@
     text-decoration: none;
 }
 
+@media (max-width: 500px) {
+    .footer a {
+        font-size: 0.8em;
+    }
+}

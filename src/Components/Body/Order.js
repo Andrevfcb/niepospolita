@@ -113,9 +113,8 @@ const Order = () => {
         <React.Fragment>
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
-        <div className="order" style={{backgroundImage: `url("${process.env.REACT_APP_BACKEND_URL}/uploads/images/10.jpg")`}}>
-                <h1 onClick={() => console.log(formState.inputs)
-                }>Uzupełnij dane do zamówienia</h1>
+        <div className="order">
+                <h1>Uzupełnij dane do zamówienia</h1>
                 <Card>
                 <form
                 onSubmit={formSubmitHandler}
@@ -153,7 +152,7 @@ const Order = () => {
                     />
                     </div>
                     <div className="address-city">
-                        <div className="address-city__zip">
+                        <div className="address-city__zip" style={{position: 'relative'}}>
                             <div className="address-city__zip-label">
                                 <label>Kod pocztowy</label>
                             </div>
@@ -164,7 +163,7 @@ const Order = () => {
                                 type="text"
                                 // label="Kod pocztowy"
                                 validators={[VALIDATOR_REQUIRE()]}
-                                errorText="Podaj poprawny kod pocztowy."
+                                errorText={formState.inputs.zipCode_end.isValid && "Podaj poprawny kod pocztowy."}
                                 onInput={inputHandler}
                             />
                             <span>-</span>
@@ -174,7 +173,7 @@ const Order = () => {
                                 type="text"
                                 // label="Nr lokalu"
                                 validators={[VALIDATOR_REQUIRE()]}
-                                errorText="Podaj poprawny kod pocztowy."
+                                errorText={formState.inputs.zipCode_start.isValid && "Podaj poprawny kod pocztowy."}
                                 onInput={inputHandler}
                             />
                             </div>
