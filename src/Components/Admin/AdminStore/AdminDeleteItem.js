@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Button from "../../FormElements/Button"
+import { AuthContext } from '../../../context/auth-context';
 
 import { useHttpClient } from '../../hooks/http-hook';
 import LoadingSpinner from "../../UIElements/LoadingSpinner"
@@ -12,6 +13,8 @@ const AdminDeleteItem = () => {
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
+    const auth = useContext(AuthContext);
+    
     useEffect(() => {
         const fetchItems = async () => {
             try {
@@ -33,9 +36,9 @@ const AdminDeleteItem = () => {
                 `${process.env.REACT_APP_BACKEND_URL}/api/items/${itemId}`,
                 'DELETE',
                 null,
-                // {
-                //   Authorization: 'Bearer ' + auth.token
-                // }
+                {
+                  Authorization: 'Bearer ' + auth.token
+                }
               );
             alert("Usunięto produkt")
             

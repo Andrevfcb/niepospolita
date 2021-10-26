@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
     VALIDATOR_REQUIRE
@@ -10,11 +10,13 @@ import Input from '../../FormElements/Input';
 
 import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
+import { AuthContext } from '../../../context/auth-context';
 
 const AdminValue = () => {
     const [value, setValue] = useState(false); 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
@@ -51,6 +53,7 @@ const AdminValue = () => {
                 newValue: parseInt(formState.inputs.value.value)
               }),
               {
+                Authorization: 'Bearer ' + auth.token,
                 'Content-Type': 'application/json'
               }
             );

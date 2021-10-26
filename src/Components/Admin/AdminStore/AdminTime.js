@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
     VALIDATOR_REQUIRE
@@ -10,6 +10,7 @@ import Input from '../../FormElements/Input';
 
 import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
+import { AuthContext } from '../../../context/auth-context';
 
 const AdminTime = () => {
     const [times, setTimes] = useState([]);
@@ -17,6 +18,7 @@ const AdminTime = () => {
     const [timeAvailability, setTimeAvailability] = useState();
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
@@ -95,6 +97,7 @@ const AdminTime = () => {
                 available: timeAvailability
               }),
               {
+                Authorization: 'Bearer ' + auth.token,
                 'Content-Type': 'application/json'
               }
             );

@@ -120,7 +120,7 @@ const Cart = () => {
                 }}></span>
             <span class="item-quantity" onClick={() => {getCoordinates()}}>{item.quantity}</span>
             <span class="fas fa-plus item-quantity__handler" onClick={() => {increase(product)}}></span>
-            <span class="item-price">{price} zł</span>
+            <span class="item-price">{price.toFixed(2)} zł</span>
             <span class="fas fa-times item-remove" onClick={() => {removeProduct(product)}}></span>
         </li>
             )
@@ -137,13 +137,13 @@ const Cart = () => {
             <li className="item-card titles">
                     <span className='item-name'>Nazwa produktu</span>
                     <span style={{width: '20%'}}>Ilość</span>
-                    <span style={{width: '10%'}}>Cena</span>
+                    <span style={{width: '20%'}}>Cena</span>
                     <span style={{width: '10%', marginLeft: '5px'}}></span>
             </li>
                 {showCartItems}
             <li className="item-card summary ">
                     <span className='item-name'></span>
-                    <span style={{width: '25%'}}>SUMA:  <b style={{marginLeft: "5px", color: "white"}}>{total} zł</b></span>
+                    <span style={{width: '25%'}}>SUMA:  <b style={{marginLeft: "5px", color: "white"}}>{total.toFixed(2)} zł</b></span>
                     <span style={{width: '5%', marginLeft: '5px'}}></span>
             </li>
             <li className="item-card__alert">

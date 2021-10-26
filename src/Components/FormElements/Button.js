@@ -34,6 +34,7 @@ const Button = props => {
       type={props.type}
       onClick={props.onClick}
       disabled={props.disabled}
+      id={props.id || null}
     >
       {props.children}
     </button>

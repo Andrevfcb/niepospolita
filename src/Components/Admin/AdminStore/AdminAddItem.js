@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
     VALIDATOR_REQUIRE
@@ -12,6 +12,7 @@ import Input from '../../FormElements/Input';
 
 import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
+import { AuthContext } from '../../../context/auth-context';
 
 
 const AdminAddItem = () => {
@@ -19,6 +20,7 @@ const AdminAddItem = () => {
     const [categories, setCategories] = useState([]);
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
@@ -76,7 +78,7 @@ const AdminAddItem = () => {
               formData
               ,
               {
-                Authorization: 'Bearer '
+                Authorization: 'Bearer ' + auth.token
                 //  + auth.token
                 // 'Content-Type': 'application/json'
               }

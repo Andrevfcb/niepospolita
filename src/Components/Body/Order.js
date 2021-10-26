@@ -6,7 +6,7 @@ import { useHttpClient } from '../hooks/http-hook';
 import ErrorModal from "../UIElements/ErrorModal";
 import { CartContext } from '../../context/cart-context';
 import Card from '../UIElements/Card';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useStripe } from '@stripe/react-stripe-js'
 
 import {
@@ -28,6 +28,8 @@ const Order = () => {
     const [minOrderValue, setMinOrderValue] = useState(false);
     const { cartItems, itemCount, removeProduct, increase, decrease, total } = useContext(CartContext);
     const stripe = useStripe();
+    let history = useHistory();
+
 
     const [formState, inputHandler] = useForm(
         {
@@ -74,6 +76,14 @@ const Order = () => {
     const formSubmitHandler = async event => {
         event.preventDefault();
         
+        let customer_items = cartItems.map(i => {
+            return {
+                quantity: i.quantity,
+                name: i.name,
+                price: i.price
+            }
+        })
+        
         const line_items = cartItems.map(i => {
             return {
                 quantity: i.quantity,
@@ -87,28 +97,59 @@ const Order = () => {
                 }  
             }
         })
-        
-
-          try {
-            const responseData = await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/api/checkout/`,
-                'POST',
-                JSON.stringify({
-                    line_items,
-                    customer_email: formState.inputs.email.value
-                }),
-                {
-                  'Content-Type': 'application/json'
-                }
-            );
-            const { sessionId } = responseData
-            await stripe.redirectToCheckout({
-                sessionId
-            })                 
-          } catch (err) {}
+        let address = {
+            street: formState.inputs.street.value,
+            local: formState.inputs.local.value,
+            zipCode_start: formState.inputs.zipCode_start.value,
+            zipCode_end: formState.inputs.zipCode_end.value,
+            city: formState.inputs.city.value
+        }
+        if (formState.inputs.apartament.value) {
+            address = {
+                ...address,
+                apartament: formState.inputs.apartament.value
+            }
+        }
+        if (event.target.id === "payment-online") {
+            try {
+                const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/checkout/`,
+                    'POST',
+                    JSON.stringify({
+                        line_items,
+                        customer_email: formState.inputs.email.value
+                    }),
+                    {
+                      'Content-Type': 'application/json'
+                    }
+                );
+                const { sessionId } = responseData
+                await stripe.redirectToCheckout({
+                    sessionId
+                })
+            } catch (err) {}
+        } else if (event.target.id === "payment-offline") {
+            try { 
+                await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/mail/`,
+                    'POST',
+                    JSON.stringify({
+                        customer_email: formState.inputs.email.value,
+                        customer_phoneNumber: formState.inputs.phoneNumber.value,
+                        customer_address: address,
+                        customer_items,
+                        total
+                    }),
+                    {
+                      'Content-Type': 'application/json'
+                    }
+                );
+                await history.push("/success")
+                window.location.reload()
+              } catch (err) {}
+        } 
       };
-
-
+    
     return (
         <React.Fragment>
         {isLoading && <LoadingSpinner asOverlay />}
@@ -117,7 +158,7 @@ const Order = () => {
                 <h1>Uzupełnij dane do zamówienia</h1>
                 <Card>
                 <form
-                onSubmit={formSubmitHandler}
+                // onSubmit={formSubmitHandler}
                 >
                     {/* <h3>Wypełnij dane do zamówienia</h3> */}
                     <div className="address-street">
@@ -209,12 +250,20 @@ const Order = () => {
                     errorText="Podaj nr telefonu."
                     onInput={inputHandler}
                     />
-                    <Button type="submit"
-                    disabled={!formState.isValid}>
+                    <Button 
+                    // type="submit"
+                    disabled={!formState.isValid}
+                    id="payment-offline"
+                    onClick={formSubmitHandler}
+                    >
                     PŁATNOŚĆ PRZY ODBIORZE
                     </Button>
-                    <Button type="submit"
-                    disabled={!formState.isValid}>
+                    <Button 
+                    // type="submit"
+                    disabled={!formState.isValid}
+                    id="payment-online"
+                    onClick={formSubmitHandler}
+                    >
                     PŁATNOŚĆ ONLINE
                     </Button>
                     {/* <button onClick={() => console.log(formState.inputs)

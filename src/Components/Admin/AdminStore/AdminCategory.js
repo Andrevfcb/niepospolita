@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Button from "../../FormElements/Button"
 import Input from '../../FormElements/Input';
 
@@ -10,6 +10,7 @@ import { useHttpClient } from '../../hooks/http-hook';
 import LoadingSpinner from "../../UIElements/LoadingSpinner"
 import ErrorModal from "../../UIElements/ErrorModal"
 import { useForm } from "../../hooks/form-hook"
+import { AuthContext } from '../../../context/auth-context';
 
 
 const AdminCategory = () => {
@@ -18,6 +19,7 @@ const AdminCategory = () => {
     const [catId, setCatId] = useState(false);
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
@@ -39,9 +41,8 @@ const AdminCategory = () => {
                 name: formState.inputs.name.value
               }),
               {
+                Authorization: 'Bearer ' + auth.token,
                 'Content-Type': 'application/json'
-                //  + auth.token
-                // 'Content-Type': 'application/json'
               }
             );
                 alert("Utworzono kategorię")
@@ -70,9 +71,9 @@ const AdminCategory = () => {
                 `${process.env.REACT_APP_BACKEND_URL}/api/category/${catId}`,
                 'DELETE',
                 null,
-                // {
-                //   Authorization: 'Bearer ' + auth.token
-                // }
+                {
+                  Authorization: 'Bearer ' + auth.token
+                }
               );
             alert("Usunięto Kategorię")
             

@@ -17,7 +17,14 @@ import Order from './Components/Body/Order';
 
 import background from './images/50.jpg'
 
+import { useAuth } from './Components/hooks/auth-hook';
+import { AuthContext } from './context/auth-context';
+import Success from './Components/Body/Success';
+import Failed from './Components/Body/Failed';
+
 function App() {
+
+  const { token, login, logout, userId, role } = useAuth();
 
   const routes = (
     <Switch>
@@ -33,6 +40,14 @@ function App() {
       <Header />
       <Order />
       </Route>
+      <Route path="/success">
+      <Header />
+      <Success />
+      </Route>
+      <Route path="/failed">
+      <Header />
+      <Failed />
+      </Route>
       <Route path="/admin">
       <AdminHeader />
         <Admin />
@@ -44,12 +59,23 @@ function App() {
 
   return (
     <Router>
+      <AuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        role: role,
+        login: login,
+        logout: logout
+      }}
+    >
       <CartContextProvider>
-      <div className="App" style={{backgroundImage: `url(${background})`}}>
+      <div className="App" style={{backgroundImage: `url(${background})`, minHeight: "100vh", display: "flex", flexDirection: "column"}}>
         {routes}
       <Footer />
       </div>
       </CartContextProvider>
+      </AuthContext.Provider>
     </Router>
     
   );

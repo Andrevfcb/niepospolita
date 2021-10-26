@@ -5,6 +5,21 @@
     position: fixed;
     background-color: black;
     color: wheat;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.admin-header form {
+    display: flex;
+}
+
+.admin-header form div {
+    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.admin-header form div label {
+    min-height: 0;
+    margin: 0;
 }

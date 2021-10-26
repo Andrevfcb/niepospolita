@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
     VALIDATOR_REQUIRE
   } from '../../util/validators';
   import { useHttpClient } from '../../hooks/http-hook';
   import LoadingSpinner from "../../UIElements/LoadingSpinner"
+  import { AuthContext } from '../../../context/auth-context';
 
-import ImageUpload from "../../FormElements/ImageUpload"
 import Button from "../../FormElements/Button"
 import Input from '../../FormElements/Input';
 
@@ -22,6 +22,8 @@ const AdminUpdateItem = () => {
     const [itemAvailability, setItemAvailability] = useState(); 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+    const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
@@ -127,9 +129,8 @@ const AdminUpdateItem = () => {
                 available: itemAvailability,
               }),
               {
+                Authorization: 'Bearer ' + auth.token,
                 'Content-Type': 'application/json'
-                //  + auth.token
-                // 'Content-Type': 'application/json'
               }
             //   formData
             //   ,
