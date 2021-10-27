@@ -3,7 +3,7 @@ import AdminHeader from "./Components/Admin/AdminHeader";
 import Admin from "./Components/Admin/AdminPanel";
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Redirect,
   Switch
