@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import './Header.css';
 import Navigation from './Navigation';
-import { Link } from 'react-router-dom';
 import { useHttpClient } from '../hooks/http-hook';
 import ErrorModal from "../UIElements/ErrorModal"
 import SideDrawer from './SideDrawer';
@@ -12,7 +11,7 @@ import Logo from '../../images/logo.png'
 
 const Header = () => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { error, clearError } = useHttpClient();
 
       const openDrawerHandler = () => {
         setDrawerIsOpen(true);
