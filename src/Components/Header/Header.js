@@ -33,14 +33,12 @@ const Header = () => {
 
             </SideDrawer>
         <div className='header'>
-        <Link to= "/admin" className="logo-link" exact>
-        {/* <a href= "https://niepospolita-lublin.com" className="logo-link" exact> */}
+        <a href= "https://niepospolita-lublin.com" className="logo-link" exact>
             <div className='logo title'>
               <img src={Logo} alt="logo" className="logo"></img>
               <span>Niepospolita Restauracja</span>
             </div>
-                </Link>
-                {/* </a> */}
+                </a>
               <button
                 className="main-navigation__menu-btn"
                 onClick={openDrawerHandler}
