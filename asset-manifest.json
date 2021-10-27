@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/niepospolita/static/css/main.96c78865.chunk.css",
-    "main.js": "/niepospolita/static/js/main.3e79835f.chunk.js",
-    "main.js.map": "/niepospolita/static/js/main.3e79835f.chunk.js.map",
+    "main.js": "/niepospolita/static/js/main.853e1fc7.chunk.js",
+    "main.js.map": "/niepospolita/static/js/main.853e1fc7.chunk.js.map",
     "runtime-main.js": "/niepospolita/static/js/runtime-main.aa32c42c.js",
     "runtime-main.js.map": "/niepospolita/static/js/runtime-main.aa32c42c.js.map",
-    "static/js/2.ca086ec9.chunk.js": "/niepospolita/static/js/2.ca086ec9.chunk.js",
-    "static/js/2.ca086ec9.chunk.js.map": "/niepospolita/static/js/2.ca086ec9.chunk.js.map",
+    "static/js/2.2114c0eb.chunk.js": "/niepospolita/static/js/2.2114c0eb.chunk.js",
+    "static/js/2.2114c0eb.chunk.js.map": "/niepospolita/static/js/2.2114c0eb.chunk.js.map",
     "index.html": "/niepospolita/index.html",
     "static/css/main.96c78865.chunk.css.map": "/niepospolita/static/css/main.96c78865.chunk.css.map",
-    "static/js/2.ca086ec9.chunk.js.LICENSE.txt": "/niepospolita/static/js/2.ca086ec9.chunk.js.LICENSE.txt",
+    "static/js/2.2114c0eb.chunk.js.LICENSE.txt": "/niepospolita/static/js/2.2114c0eb.chunk.js.LICENSE.txt",
     "static/media/50.e4514fa3.jpg": "/niepospolita/static/media/50.e4514fa3.jpg",
     "static/media/logo.f284211f.png": "/niepospolita/static/media/logo.f284211f.png"
   },
   "entrypoints": [
     "static/js/runtime-main.aa32c42c.js",
-    "static/js/2.ca086ec9.chunk.js",
+    "static/js/2.2114c0eb.chunk.js",
     "static/css/main.96c78865.chunk.css",
-    "static/js/main.3e79835f.chunk.js"
+    "static/js/main.853e1fc7.chunk.js"
   ]
 }
