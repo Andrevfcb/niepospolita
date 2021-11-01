@@ -4,6 +4,7 @@ import AdminNav from './AdminNav';
 import AdminAddItem from './AdminStore/AdminAddItem';
 import AdminCategory from './AdminStore/AdminCategory';
 import AdminDeleteItem from './AdminStore/AdminDeleteItem';
+import AdminDeliveryPrice from './AdminStore/AdminDeliveryPrice';
 import AdminTime from './AdminStore/AdminTime';
 import AdminUpdateItem from './AdminStore/AdminUpdate';
 import AdminValue from './AdminStore/AdminValue';
@@ -32,6 +33,7 @@ const AdminPanel = () => {
                 {section === "3" && <AdminCategory />}
                 {section === "4" && <AdminTime />}
                 {section === "5" && <AdminValue />}
+                {section === "6" && <AdminDeliveryPrice />}
                 {/* {section === 1 ? <AdminChar /> : (section === 2 ? <AdminShoop /> : <h2>Witaj, użyj panelu po lewej</h2>)} */}
                 </div>
             </div>

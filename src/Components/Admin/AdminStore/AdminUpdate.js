@@ -19,7 +19,8 @@ const AdminUpdateItem = () => {
     const [categories, setCategories] = useState([]);
     const [items, setItems] = useState([]);
     const [item, setItem] = useState(false);
-    const [itemAvailability, setItemAvailability] = useState(); 
+    const [itemAvailability, setItemAvailability] = useState();
+    const [itemBonus, setItemBonus] = useState();
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -55,7 +56,7 @@ const AdminUpdateItem = () => {
         false
       );
 
-      const [itemFormState, selectHandler] = useForm(
+    const [itemFormState, selectHandler] = useForm(
         {
             name: {
               value: '',
@@ -101,6 +102,7 @@ const AdminUpdateItem = () => {
           
                   setItem(responseData.item);
                   setItemAvailability(responseData.item.available)
+                  setItemBonus(responseData.item.bonus)
             } catch (err) {}      
             } else return
         }
@@ -111,13 +113,6 @@ const AdminUpdateItem = () => {
     const itemSubmitHandler = async event => {
         event.preventDefault();
           try {
-            // const formData = new FormData();
-            // formData.append('name', formState.inputs.name.value);
-            // formData.append('description', formState.inputs.description.value);
-            // formData.append('price', formState.inputs.price.value);
-            // formData.append('category', formState.inputs.category.value);
-            // formData.append('available', itemAvailability);
-            // formData.append('image', formState.inputs.image.value);
             await sendRequest(
               `${process.env.REACT_APP_BACKEND_URL}/api/items/${item.id}`,
               'PATCH',
@@ -127,6 +122,7 @@ const AdminUpdateItem = () => {
                 price: formState.inputs.price.value,
                 category: formState.inputs.category.value,
                 available: itemAvailability,
+                bonus: itemBonus
               }),
               {
                 Authorization: 'Bearer ' + auth.token,
@@ -151,6 +147,10 @@ const AdminUpdateItem = () => {
     const changeAvailability = () => {
         setItemAvailability(prevAvailibility => !prevAvailibility)
     }
+
+    const changeBonus = () => {
+      setItemBonus(prevBonus => !prevBonus)
+  }
     
 
     return (
@@ -181,12 +181,6 @@ const AdminUpdateItem = () => {
                     onInput={inputHandler}
                     initialValue={item.name}
                     />
-                    {/* <ImageUpload
-                    center
-                    id="image"
-                    onInput={inputHandler}
-                    errorText="Wprowadź zdjęcie produktu."
-                    /> */}
                     <Input 
                     id="description"
                     element="textarea"
@@ -218,8 +212,10 @@ const AdminUpdateItem = () => {
                     options={setOptions}
                     initialValue={item.category}
                     />}
-                    <label for='availability' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt dostępny</label>
+                    <label for='availability' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt dostępny?</label>
                     <input id='availability' type='checkbox' onChange={changeAvailability} checked={itemAvailability} style={{display: 'block', margin: 'auto'}} />
+                    <label for='bonus' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt gratis?</label>
+                    <input id='bonus' type='checkbox' onChange={changeBonus} checked={itemBonus} style={{display: 'block', margin: 'auto'}} />
                     <Button type="submit"
                     // disabled={!formState.isValid}
                     >

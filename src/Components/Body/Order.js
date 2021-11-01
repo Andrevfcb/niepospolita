@@ -8,6 +8,8 @@ import { CartContext } from '../../context/cart-context';
 import Card from '../UIElements/Card';
 import { Link, useHistory } from 'react-router-dom';
 import { useStripe } from '@stripe/react-stripe-js'
+import { TimePickerComponent } from '@syncfusion/ej2-react-calendars'
+import { useDate } from '../hooks/date-hook';
 
 import {
     VALIDATOR_REQUIRE,
@@ -17,19 +19,97 @@ import {
 
 import { useForm } from "../hooks/form-hook"
 
-import Geocode from "react-geocode";
-
 const Order = () => {
     
 
-    const [items, setItems] = useState([])
-    const [orderValid, setOrderValid] = useState(false)
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-    const [minOrderValue, setMinOrderValue] = useState(false);
-    const { cartItems, itemCount, removeProduct, increase, decrease, total } = useContext(CartContext);
+    const { cartItems, total } = useContext(CartContext);
+    const [deliveryPrice, setDeliveryPrice] = useState(false);
+    const [bonusItems, setBonusItems] = useState([]);
+    const [timepickerValue, setTimepickerValue] = useState('nie określono');
+    const [minTime, setMinTime] = useState();
+    const [maxTime, setMaxTime] = useState();
+    const [isToLateToOrder, setIsToLateToOrder] = useState(false);
+
+    const [deliveryHours, setDeliveryHours] = useState(false);
     const stripe = useStripe();
     let history = useHistory();
+    
+    const { today, dayId, currentHour, currentMinute } = useDate();
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+            const getDeliveryPrice = async () => {
+                
+                try {
+                    const responseData = await sendRequest(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
+                      );
+                      setDeliveryPrice(responseData.delivery_price.value);
+                } catch (err) {}
+            }
+            const getBonusItems = async () => {
+                
+                try {
+                    const responseData = await sendRequest(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/bonus/`
+                      );
+                      setBonusItems(responseData.bonusItems);
+                } catch (err) {}
+            }
+            const getDeliveryHours = async () => {
+                
+                try {
+                    const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/time/`
+                  );
+                
+                  setDeliveryHours(responseData.time)
+                } catch (err) {}
+            } 
+            getDeliveryPrice()
+            getBonusItems()
+            getDeliveryHours()
+    }, [sendRequest])
+
+    useEffect(() => {
+        let minOrderTime
+        let maxOrderTime
+        if(deliveryHours && today && dayId && currentHour && currentMinute) {
+            const currentDay = deliveryHours.find(time => time._id === dayId)
+            const startHour = currentDay.time.start.hour
+            const startMinute = currentDay.time.start.minute + '0'
+            const endHour = currentDay.time.end.hour
+            const endMinute = currentDay.time.end.minute + '0'
+            
+            maxOrderTime = (endHour + ':' + endMinute).toString()
+
+            if(currentHour > startHour) {
+                if(currentMinute > 30) {
+                    minOrderTime = (currentHour + 1 + ':30').toString()
+                } else {
+                    minOrderTime = (currentHour + 1 + ':00').toString()
+                }
+                
+            } else if (currentHour === startHour && currentMinute > startMinute) {
+                if(currentMinute > 30) {
+                    minOrderTime = (currentHour + 1 + ':30').toString()
+                } else {
+                    minOrderTime = (currentHour + 1 + ':00').toString()
+                }
+            } else minOrderTime = (startHour + ':' + startMinute).toString()
+            const endTimeDifference = endMinute - currentMinute
+
+            if(currentHour >= endHour || (currentHour === endHour && (currentMinute > endMinute || endTimeDifference < 30 )) ) {
+                setIsToLateToOrder(true)
+            }
+            
+        }
+            if(minOrderTime && maxOrderTime) {
+                setMinTime(new Date(`8/3/2017 ${minOrderTime}`))
+                setMaxTime(new Date(`8/3/2017 ${maxOrderTime}`))
+            }
+    }, [deliveryHours, today, dayId, currentHour, currentMinute])
 
     const [formState, inputHandler] = useForm(
         {
@@ -49,11 +129,7 @@ const Order = () => {
                 value: null,
                 isValid: true
         },
-            zipCode_start: {
-                value: '',
-                isValid: false
-        },
-            zipCode_end: {
+            zipCode: {
                 value: '',
                 isValid: false
         },
@@ -68,7 +144,11 @@ const Order = () => {
             phoneNumber: {
                 value: '',
                 isValid: false
-        }
+        },
+        message: {
+            value: null,
+            isValid: true
+        },
         },
         false
       );
@@ -83,31 +163,74 @@ const Order = () => {
                 price: i.price
             }
         })
-        
-        const line_items = cartItems.map(i => {
-            return {
-                quantity: i.quantity,
+        let line_items
+        if (cartItems && deliveryPrice) {
+            line_items = cartItems.map(i => {
+                return {
+                    quantity: i.quantity,
+                    price_data: {
+                        currency: "pln",
+                        unit_amount: i.price * 100,
+                        product_data: {
+                            name: i.name,
+                            description: i.description
+                        }
+                    }  
+                }
+            })
+    
+            const delivery_price = {
+                quantity: 1,
                 price_data: {
                     currency: "pln",
-                    unit_amount: i.price * 100,
+                    unit_amount: deliveryPrice * 100,
                     product_data: {
-                        name: i.name,
-                        description: i.description
+                        name: 'opłata za dowóz'
                     }
                 }  
             }
-        })
+            
+            if (total >= 80 && bonusItems.length > 0) {
+                bonusItems.map(i => {
+                    return line_items.push({
+                    quantity: 1,
+                    price_data: {
+                        currency: "pln",
+                        unit_amount: 0 * 100,
+                        product_data: {
+                            name: i.name + " gratis"
+                        }}})})
+            } else if (total <= 60) {
+                line_items.push(delivery_price)
+            }
+        }
+        
         let address = {
             street: formState.inputs.street.value,
             local: formState.inputs.local.value,
-            zipCode_start: formState.inputs.zipCode_start.value,
-            zipCode_end: formState.inputs.zipCode_end.value,
+            zipCode: formState.inputs.zipCode.value,
             city: formState.inputs.city.value
         }
-        if (formState.inputs.apartament.value) {
+        if (!!formState.inputs.apartament.value) {
             address = {
                 ...address,
                 apartament: formState.inputs.apartament.value
+            }
+        } else {
+            address = {
+                ...address,
+                apartament: false
+            }
+        }
+        if (!!formState.inputs.message.value) {
+            address = {
+                ...address,
+                message: formState.inputs.message.value
+            }
+        } else {
+            address = {
+                ...address,
+                message: "brak"
             }
         }
         if (event.target.id === "payment-online") {
@@ -117,7 +240,11 @@ const Order = () => {
                     'POST',
                     JSON.stringify({
                         line_items,
-                        customer_email: formState.inputs.email.value
+                        customer_email: formState.inputs.email.value,
+                        message: formState.inputs.message.value,
+                        deliveryHour: timepickerValue.toString(),
+                        phone: formState.inputs.phoneNumber.value,
+                        address
                     }),
                     {
                       'Content-Type': 'application/json'
@@ -129,6 +256,23 @@ const Order = () => {
                 })
             } catch (err) {}
         } else if (event.target.id === "payment-offline") {
+
+            let delivery_info
+            let totalAmount
+            if (total && deliveryPrice && total <= 60 ) {
+                delivery_info = deliveryPrice + "zł"
+                totalAmount = total + deliveryPrice
+            } else {
+                delivery_info = "dostawa gratis"
+                totalAmount = total
+            }
+            let bonusItemsNames = 'brak - za mała kwota zamówienia'
+            if(bonusItems.length > 0 && total > 80 ) {
+                bonusItemsNames = bonusItems.map(item => {
+                    return `${item.name} `
+                })
+            }
+            
             try { 
                 await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/api/mail/`,
@@ -138,7 +282,10 @@ const Order = () => {
                         customer_phoneNumber: formState.inputs.phoneNumber.value,
                         customer_address: address,
                         customer_items,
-                        total
+                        total: totalAmount,
+                        delivery_info,
+                        bonusItemsNames,
+                        timepickerValue
                     }),
                     {
                       'Content-Type': 'application/json'
@@ -149,18 +296,31 @@ const Order = () => {
               } catch (err) {}
         } 
       };
+
+    const handleTimeValue = (e) => {
+        let hours
+        let minutes
+        if (e.target.value) {
+            hours = e.target.value.getHours()
+            minutes = e.target.value.getMinutes()
+            if (minutes < 10) {
+                minutes = '0' + e.target.value.getMinutes()
+            }
+            setTimepickerValue(hours + ':' + minutes)
+        } else {setTimepickerValue('nie określono')}
+      }
     
     return (
         <React.Fragment>
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="order">
-                <h1>Uzupełnij dane do zamówienia</h1>
+                <h1 onClick={() => console.log(timepickerValue)
+                }>Uzupełnij dane do zamówienia</h1>
                 <Card>
+                {!isToLateToOrder &&  
                 <form
-                // onSubmit={formSubmitHandler}
                 >
-                    {/* <h3>Wypełnij dane do zamówienia</h3> */}
                     <div className="address-street">
                     <Input 
                     id="street"
@@ -183,7 +343,7 @@ const Order = () => {
                     <Input 
                     id="apartament"
                     element="input"
-                    type="number"
+                    type="text"
                     label="Nr mieszkania"
                     validators={null}
                     initialValid={true}
@@ -194,27 +354,14 @@ const Order = () => {
                     </div>
                     <div className="address-city">
                         <div className="address-city__zip" style={{position: 'relative'}}>
-                            <div className="address-city__zip-label">
-                                <label>Kod pocztowy</label>
-                            </div>
                             <div className="address-city__zip-input">
                             <Input 
-                                id="zipCode_start"
+                                id="zipCode"
                                 element="input"
                                 type="text"
-                                // label="Kod pocztowy"
+                                label="Kod pocztowy"
                                 validators={[VALIDATOR_REQUIRE()]}
-                                errorText={formState.inputs.zipCode_end.isValid && "Podaj poprawny kod pocztowy."}
-                                onInput={inputHandler}
-                            />
-                            <span>-</span>
-                            <Input 
-                                id="zipCode_end"
-                                element="input"
-                                type="text"
-                                // label="Nr lokalu"
-                                validators={[VALIDATOR_REQUIRE()]}
-                                errorText={formState.inputs.zipCode_start.isValid && "Podaj poprawny kod pocztowy."}
+                                errorText={"Podaj poprawny kod pocztowy."}
                                 onInput={inputHandler}
                             />
                             </div>
@@ -250,29 +397,46 @@ const Order = () => {
                     errorText="Podaj nr telefonu."
                     onInput={inputHandler}
                     />
-                    <Button 
-                    // type="submit"
-                    disabled={!formState.isValid}
+                    <Input 
+                    id="message"
+                    element="textarea"
+                    type="text"
+                    label="Komentarz do dostawcy"
+                    validators={null}
+                    initialValid={true}
+                    // errorText="Podaj nr telefonu."
+                    onInput={inputHandler}
+                    />
+                    <label style={{fontWeight: 'bold', marginBottom: '0.5rem', minHeight: '28px'}}>Wybierz oczekiwany czas dowozu:</label>
+                    <div className='timepicker'>
+                    <TimePickerComponent
+                    placeholder="wybierz godzinę"
+                    format="HH:mm"
+                    step={30}
+                    // value={timepickerValue}
+                    min={minTime}
+                    max={maxTime}
+                    onChange={handleTimeValue}
+                    ></TimePickerComponent>
+                    </div>
+                    
+                    <Button
+                    disabled={!formState.isValid || isToLateToOrder}
                     id="payment-offline"
                     onClick={formSubmitHandler}
                     >
                     PŁATNOŚĆ PRZY ODBIORZE
                     </Button>
-                    <Button 
-                    // type="submit"
-                    disabled={!formState.isValid}
+                    <Button
+                    disabled={!formState.isValid || isToLateToOrder}
                     id="payment-online"
                     onClick={formSubmitHandler}
                     >
                     PŁATNOŚĆ ONLINE
                     </Button>
-                    {/* <button onClick={() => console.log(formState.inputs)
-                     }></button> */}
-                </form>
+                </form>}
+                {isToLateToOrder && <p style={{color: 'red'}}>Dziś już nie dowozimy, zapraszamy ponownie.</p>}
                 </Card>
-            {/* {!items.length > 0 && <h3 style={{color: "white"}}>Brak produktów w koszyku</h3>}
-            {items.length > 0 && <Button disabled={!orderValid}>Przejdź do zamówienia</Button>}
-            {!items.length > 0 && <Link to="/"><Button>Przejdź do sklepu</Button></Link>} */}
         </div>
         </React.Fragment>
         

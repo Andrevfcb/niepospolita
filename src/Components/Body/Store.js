@@ -75,8 +75,10 @@ const Store = () => {
     const itemList = () => {
         let item_list
         let sortItems
+        let availableItems
         if(items) {
-            sortItems = items.sort((a, b) => a.name > b.name ? 1 : -1)
+            availableItems = items.filter(item => item.available === true)
+            sortItems = availableItems.sort((a, b) => a.name > b.name ? 1 : -1)
             item_list = sortItems.map(i => {
             return (<ProductCard key={i.id} id={i.id} name={i.name} price={i.price} description={i.description} image={i.image} category={i.category} available={i.available} />)
     })

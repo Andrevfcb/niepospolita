@@ -7,10 +7,15 @@
 }
 
 .cart h1 {
-    padding-bottom: 1em;
+    /* padding-bottom: 0.5em; */
     margin: 0;
     padding-top: 1.6em;
     text-shadow: 0 0.1em 0.1em black;
+}
+
+.cart .cart-info p {
+    font-family: 'Poiret One', cursive;
+    color: white;
 }
 
 .cart .card {
@@ -98,13 +103,27 @@
     justify-content: end;
 }
 
-@media (max-width: 700px) {
+.cart .item-card .total {
+    width: 45%;
+}
 
+@media (max-width: 1150px) {
+    .cart .item-card .total {
+        width: 75%;
+    }
 }
 
 @media (max-width: 500px) {
     .cart .item-card span {
         padding: 0 0.2em;
+        font-size: 0.8em;
+    }
+
+    .cart .item-card img {
+        max-height: 70%;
+    }
+
+    .cart .cart-info p {
         font-size: 0.8em;
     }
 }

@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
 import { AuthContext } from '../../../context/auth-context';
 
-const AdminValue = () => {
+const AdminDeliveryPrice = () => {
     const [value, setValue] = useState(false); 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -32,9 +32,9 @@ const AdminValue = () => {
         const fetchValue = async () => {
             try {
               const responseData = await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/api/value/${process.env.REACT_APP_MIN_VALUE_ID}`
+                `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
               );
-              setValue(responseData.value);
+              setValue(responseData.delivery_price);
             
         } catch (err) {}
           
@@ -47,10 +47,10 @@ const AdminValue = () => {
         event.preventDefault();
           try {
             await sendRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/api/value/${process.env.REACT_APP_MIN_VALUE_ID}`,
+              `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`,
               'PATCH',
               JSON.stringify({
-                newValue: parseInt(formState.inputs.value.value)
+                value: parseInt(formState.inputs.value.value)
               }),
               {
                 Authorization: 'Bearer ' + auth.token,
@@ -67,7 +67,7 @@ const AdminValue = () => {
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Zmień minimalną wartość zamówienia</h2>
+                <h2>Zmień wartość opłaty za dowóz</h2>
                 {value && <form
                 onSubmit={valueSubmitHandler}
                 >
@@ -75,20 +75,20 @@ const AdminValue = () => {
                     id="value"
                     element="input"
                     type="number"
-                    label="Minimalna wartość zamówienia (zł)"
+                    label="Minimalna wartość opłaty za dowóz (zł)"
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
                     initialValue={value.value}
-                    />
+                    /> 
                     <Button type="submit"
                     // disabled={!formState.isValid}
                     >
                     ZMIEŃ WARTOŚĆ
-                    </Button>
+                    </Button> 
                 </form>}
                 </React.Fragment>
     )
 }
 
-export default AdminValue
+export default AdminDeliveryPrice
