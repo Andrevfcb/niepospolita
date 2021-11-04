@@ -207,7 +207,7 @@ const Order = () => {
                         currency: "pln",
                         unit_amount: 0 * 100,
                         product_data: {
-                            name: bonusItem.name + " gratis"
+                            name: bonusItem.item + " gratis"
                         }}})
             } else if (total <= 60) {
                 line_items.push(delivery_price)
