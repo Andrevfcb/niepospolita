@@ -208,7 +208,7 @@ const Cart = () => {
             <li className="item-card summary ">
                     <span className='item-name'></span>
                     <span className='total'>SUMA:  <b style={{marginLeft: "5px", color: "white"}}>{total.toFixed(2)} zł</b> 
-                    {deliveryPrice && total.toFixed(2) <= minBonusItemsPrice ? (total.toFixed(2) <= minBonusDeliveryPrice ? <b> + ({deliveryPrice} zł dostawa)</b> : <span style={{fontSize: "0.7em", color: "lightgreen"}}>(powyżej {minBonusDeliveryPrice} zł dostawa gratis)</span>) : <span style={{fontSize: "0.7em", color: "lightgreen"}}>(powyżej 80 zł dostawa, {bonusItems.length > 0 && bonusItemsNames} gratis)</span>} </span>
+                    {total.toFixed(2) <= minBonusDeliveryPrice ? <b> + ({deliveryPrice} zł dostawa)</b> : <span style={{fontSize: "0.7em", color: "lightgreen"}}>(powyżej {minBonusDeliveryPrice} zł dostawa gratis)</span>} </span>
             </li>
             <li className="item-card__alert">
                     <span>{!orderValid.valid && minOrderValue && <p>{orderValid.message}</p>}</span>
