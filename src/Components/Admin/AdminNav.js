@@ -8,9 +8,9 @@ const AdminNav = ({ changeSection }) => {
                 <li id={1} onClick={changeSection}>Zmień produkt</li>
                 <li id={2} onClick={changeSection}>Usuń produkt</li>
                 <li id={3} onClick={changeSection}>Kategorie</li>
-                <li id={4} onClick={changeSection}>Godziny dowozu</li>
-                <li id={5} onClick={changeSection}>Min. wartość zamówienia</li>
-                <li id={6} onClick={changeSection}>Opłata za dowóz</li>
+                <li id={4} onClick={changeSection}>Min. wartość zamówienia</li>
+                <li id={5} onClick={changeSection}>Dowóz</li>
+                <li id={6} onClick={changeSection}>Min. wartości gratis</li>
             </ul>
         
     )

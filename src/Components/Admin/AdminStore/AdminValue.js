@@ -82,7 +82,6 @@ const AdminValue = () => {
                     initialValue={value.value}
                     />
                     <Button type="submit"
-                    // disabled={!formState.isValid}
                     >
                     ZMIEŃ WARTOŚĆ
                     </Button>

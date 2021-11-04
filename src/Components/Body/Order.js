@@ -23,19 +23,20 @@ const Order = () => {
     
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-    const { cartItems, total } = useContext(CartContext);
+    
     const [deliveryPrice, setDeliveryPrice] = useState(false);
-    const [bonusItems, setBonusItems] = useState([]);
     const [timepickerValue, setTimepickerValue] = useState('nie określono');
     const [minTime, setMinTime] = useState();
     const [maxTime, setMaxTime] = useState();
     const [isToLateToOrder, setIsToLateToOrder] = useState(false);
+    const [paymentOffline, setPaymentOffline] = useState(false);
 
     const [deliveryHours, setDeliveryHours] = useState(false);
     const stripe = useStripe();
     let history = useHistory();
     
     const { today, dayId, currentHour, currentMinute } = useDate();
+    const { cartItems, total, bonusItem } = useContext(CartContext);
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -46,15 +47,6 @@ const Order = () => {
                         `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
                       );
                       setDeliveryPrice(responseData.delivery_price.value);
-                } catch (err) {}
-            }
-            const getBonusItems = async () => {
-                
-                try {
-                    const responseData = await sendRequest(
-                        `${process.env.REACT_APP_BACKEND_URL}/api/bonus/`
-                      );
-                      setBonusItems(responseData.bonusItems);
                 } catch (err) {}
             }
             const getDeliveryHours = async () => {
@@ -68,7 +60,6 @@ const Order = () => {
                 } catch (err) {}
             } 
             getDeliveryPrice()
-            getBonusItems()
             getDeliveryHours()
     }, [sendRequest])
 
@@ -78,32 +69,51 @@ const Order = () => {
         if(deliveryHours && today && dayId && currentHour && currentMinute) {
             const currentDay = deliveryHours.find(time => time._id === dayId)
             const startHour = currentDay.time.start.hour
-            const startMinute = currentDay.time.start.minute + '0'
+            let startMinute = currentDay.time.start.minute
             const endHour = currentDay.time.end.hour
-            const endMinute = currentDay.time.end.minute + '0'
+            let endMinute = currentDay.time.end.minute
+
+            if (currentDay.time.start.minute < 10) {
+                startMinute = currentDay.time.start.minute + '0'
+            } else {
+                startMinute = currentDay.time.start.minute
+            }
+
+            if (currentDay.time.end.minute < 10) {
+                endMinute = currentDay.time.end.minute + '0'
+            } else {
+                endMinute = currentDay.time.end.minute
+            }
             
             maxOrderTime = (endHour + ':' + endMinute).toString()
-
+            
+            
             if(currentHour > startHour) {
-                if(currentMinute > 30) {
+                if(currentMinute > 45) {
+                    minOrderTime = (currentHour + 2 + ':00').toString()
+                } else if (currentMinute > 30) {
+                    minOrderTime = (currentHour + 1 + ':45').toString()
+                } else if (currentMinute > 15) {
                     minOrderTime = (currentHour + 1 + ':30').toString()
                 } else {
-                    minOrderTime = (currentHour + 1 + ':00').toString()
+                    minOrderTime = (currentHour + 1 + ':15').toString()
                 }
                 
             } else if (currentHour === startHour && currentMinute > startMinute) {
-                if(currentMinute > 30) {
+                if(currentMinute > 45) {
+                    minOrderTime = (currentHour + 2 + ':00').toString()
+                } else if (currentMinute > 30) {
+                    minOrderTime = (currentHour + 1 + ':45').toString()
+                } else if (currentMinute > 15) {
                     minOrderTime = (currentHour + 1 + ':30').toString()
                 } else {
-                    minOrderTime = (currentHour + 1 + ':00').toString()
+                    minOrderTime = (currentHour + 1 + ':15').toString()
                 }
-            } else minOrderTime = (startHour + ':' + startMinute).toString()
-            const endTimeDifference = endMinute - currentMinute
+            } else minOrderTime = (startHour + 1 + ':' + startMinute).toString()
 
-            if(currentHour >= endHour || (currentHour === endHour && (currentMinute > endMinute || endTimeDifference < 30 )) ) {
+            if(currentHour >= endHour || (currentHour === (endHour - 1) && (currentMinute > endMinute )) ) {
                 setIsToLateToOrder(true)
             }
-            
         }
             if(minOrderTime && maxOrderTime) {
                 setMinTime(new Date(`8/3/2017 ${minOrderTime}`))
@@ -190,16 +200,15 @@ const Order = () => {
                 }  
             }
             
-            if (total >= 80 && bonusItems.length > 0) {
-                bonusItems.map(i => {
-                    return line_items.push({
+            if (total >= 80 && bonusItem) {
+                line_items.push({
                     quantity: 1,
                     price_data: {
                         currency: "pln",
                         unit_amount: 0 * 100,
                         product_data: {
-                            name: i.name + " gratis"
-                        }}})})
+                            name: bonusItem.name + " gratis"
+                        }}})
             } else if (total <= 60) {
                 line_items.push(delivery_price)
             }
@@ -233,7 +242,7 @@ const Order = () => {
                 message: "brak"
             }
         }
-        if (event.target.id === "payment-online") {
+        if (event.target.id === "payment-online" && !isToLateToOrder) {
             try {
                 const responseData = await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/api/checkout/`,
@@ -255,10 +264,11 @@ const Order = () => {
                     sessionId
                 })
             } catch (err) {}
-        } else if (event.target.id === "payment-offline") {
+        } else if (event.target.id === "payment-offline" && !isToLateToOrder) {
 
             let delivery_info
             let totalAmount
+            const paymentMethod = event.target.name
             if (total && deliveryPrice && total <= 60 ) {
                 delivery_info = deliveryPrice + "zł"
                 totalAmount = total + deliveryPrice
@@ -266,11 +276,9 @@ const Order = () => {
                 delivery_info = "dostawa gratis"
                 totalAmount = total
             }
-            let bonusItemsNames = 'brak - za mała kwota zamówienia'
-            if(bonusItems.length > 0 && total > 80 ) {
-                bonusItemsNames = bonusItems.map(item => {
-                    return `${item.name} `
-                })
+            let bonusItemName = 'brak'
+            if(bonusItem && total > 80 ) {
+                bonusItemName = bonusItem.item
             }
             
             try { 
@@ -284,8 +292,9 @@ const Order = () => {
                         customer_items,
                         total: totalAmount,
                         delivery_info,
-                        bonusItemsNames,
-                        timepickerValue
+                        bonusItemName,
+                        timepickerValue,
+                        paymentMethod
                     }),
                     {
                       'Content-Type': 'application/json'
@@ -309,13 +318,18 @@ const Order = () => {
             setTimepickerValue(hours + ':' + minutes)
         } else {setTimepickerValue('nie określono')}
       }
+
+    const handleOfflinePayment = (e) => {
+        e.preventDefault();
+        setPaymentOffline(prevPayment => !prevPayment)
+    }
     
     return (
         <React.Fragment>
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="order">
-                <h1 onClick={() => console.log(timepickerValue)
+                <h1 onClick={() => console.log(cartItems, total, bonusItem)
                 }>Uzupełnij dane do zamówienia</h1>
                 <Card>
                 {!isToLateToOrder &&  
@@ -347,8 +361,6 @@ const Order = () => {
                     label="Nr mieszkania"
                     validators={null}
                     initialValid={true}
-                    // validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Podaj poprawny nr mieszkania."
                     onInput={inputHandler}
                     />
                     </div>
@@ -404,7 +416,6 @@ const Order = () => {
                     label="Komentarz do dostawcy"
                     validators={null}
                     initialValid={true}
-                    // errorText="Podaj nr telefonu."
                     onInput={inputHandler}
                     />
                     <label style={{fontWeight: 'bold', marginBottom: '0.5rem', minHeight: '28px'}}>Wybierz oczekiwany czas dowozu:</label>
@@ -412,28 +423,47 @@ const Order = () => {
                     <TimePickerComponent
                     placeholder="wybierz godzinę"
                     format="HH:mm"
-                    step={30}
-                    // value={timepickerValue}
+                    step={15}
                     min={minTime}
                     max={maxTime}
                     onChange={handleTimeValue}
                     ></TimePickerComponent>
                     </div>
-                    
+                    <div>
                     <Button
                     disabled={!formState.isValid || isToLateToOrder}
                     id="payment-offline"
-                    onClick={formSubmitHandler}
+                    onClick={handleOfflinePayment}
+                    isClicked={paymentOffline}
                     >
                     PŁATNOŚĆ PRZY ODBIORZE
                     </Button>
                     <Button
-                    disabled={!formState.isValid || isToLateToOrder}
+                    disabled={!formState.isValid || isToLateToOrder || paymentOffline}
                     id="payment-online"
                     onClick={formSubmitHandler}
                     >
                     PŁATNOŚĆ ONLINE
                     </Button>
+                    </div>
+                    {paymentOffline && <div style={{margin: '1em'}}>
+                    <Button
+                    disabled={!formState.isValid || isToLateToOrder}
+                    id="payment-offline"
+                    payment="karta"
+                    onClick={formSubmitHandler}
+                    >
+                    PŁATNOŚĆ KARTĄ
+                    </Button>
+                    <Button
+                    disabled={!formState.isValid || isToLateToOrder}
+                    id="payment-offline"
+                    payment="gotówka"
+                    onClick={formSubmitHandler}
+                    >
+                    PŁATNOŚĆ GOTÓWKĄ
+                    </Button>
+                    </div>}
                 </form>}
                 {isToLateToOrder && <p style={{color: 'red'}}>Dziś już nie dowozimy, zapraszamy ponownie.</p>}
                 </Card>

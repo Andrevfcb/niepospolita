@@ -22,7 +22,6 @@
 .button:hover,
 .button:active {
   background: #726006;
-  /* border-color: #ff4382; */
 }
 
 .button--inverse {

@@ -48,10 +48,6 @@ const AdminUpdateItem = () => {
                 value: '',
                 isValid: false
     },
-        //   image: {
-        //     value: null,
-        //     isValid: false
-        //   }
         },
         false
       );
@@ -217,7 +213,6 @@ const AdminUpdateItem = () => {
                     <label for='bonus' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt gratis?</label>
                     <input id='bonus' type='checkbox' onChange={changeBonus} checked={itemBonus} style={{display: 'block', margin: 'auto'}} />
                     <Button type="submit"
-                    // disabled={!formState.isValid}
                     >
                     ZMIEŃ
                     </Button>

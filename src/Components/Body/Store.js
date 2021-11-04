@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import "./Store.css";
-import Input from '../FormElements/Input';
 import ProductCard from './ProductCard';
 import Card from '../UIElements/Card'
 

@@ -40,8 +40,21 @@ const cartReducer = (state, action) => {
             return {
                 ...state,
                 cartItems: [...state.cartItems],
-                ...sumItems(state.cartItems)
+                ...sumItems(state.cartItems),
             }
+        case 'ADD_BONUS_ITEM':
+            const bonusItem = {
+                id: action.payload._id,
+                item: action.payload.name,
+                quantity: 1,
+                price: 0
+            }
+        return {
+                ...state,
+                cartItems: [...state.cartItems],
+                ...sumItems(state.cartItems),
+                bonusItem
+            }   
         default:
                 return state;
     }

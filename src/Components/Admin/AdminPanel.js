@@ -2,13 +2,12 @@ import React, {useState} from 'react';
 import "./Admin.css"
 import AdminNav from './AdminNav';
 import AdminAddItem from './AdminStore/AdminAddItem';
+import AdminBonus from './AdminStore/AdminBonus';
 import AdminCategory from './AdminStore/AdminCategory';
 import AdminDeleteItem from './AdminStore/AdminDeleteItem';
-import AdminDeliveryPrice from './AdminStore/AdminDeliveryPrice';
-import AdminTime from './AdminStore/AdminTime';
+import AdminDelivery from './AdminStore/AdminDelivery';
 import AdminUpdateItem from './AdminStore/AdminUpdate';
 import AdminValue from './AdminStore/AdminValue';
-// import AdminStore from './AdminStore/AdminStore';
 
 const AdminPanel = () => {
 
@@ -31,10 +30,9 @@ const AdminPanel = () => {
                 {section === "1" && <AdminUpdateItem />}
                 {section === "2" && <AdminDeleteItem />}
                 {section === "3" && <AdminCategory />}
-                {section === "4" && <AdminTime />}
-                {section === "5" && <AdminValue />}
-                {section === "6" && <AdminDeliveryPrice />}
-                {/* {section === 1 ? <AdminChar /> : (section === 2 ? <AdminShoop /> : <h2>Witaj, użyj panelu po lewej</h2>)} */}
+                {section === "4" && <AdminValue />}
+                {section === "5" && <AdminDelivery />}
+                {section === "6" && <AdminBonus />}
                 </div>
             </div>
         </React.Fragment>

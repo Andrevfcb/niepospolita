@@ -79,8 +79,6 @@ const AdminAddItem = () => {
               ,
               {
                 Authorization: 'Bearer ' + auth.token
-                //  + auth.token
-                // 'Content-Type': 'application/json'
               }
             );
                 alert("Utworzono produkt")
@@ -146,8 +144,6 @@ const AdminAddItem = () => {
                     disabled={!formState.isValid}>
                     DODAJ
                     </Button>
-                    {/* <button onClick={() => console.log(formState.inputs)
-                     }></button> */}
                 </form>
                 </React.Fragment>
     )

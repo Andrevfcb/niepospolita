@@ -20,7 +20,6 @@
 }
 
 .store-info p {
-    /* font-family: 'Roboto', sans-serif; */
     font-family: 'Poiret One', cursive;
     color: white;
 }
@@ -103,7 +102,6 @@
 }
 
 .store .categories {
-    /* width: 50%; */
     margin: auto;
 }
 

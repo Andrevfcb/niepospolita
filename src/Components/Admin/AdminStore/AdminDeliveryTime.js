@@ -13,14 +13,14 @@ import ErrorModal from "../../UIElements/ErrorModal"
 import { AuthContext } from '../../../context/auth-context';
 
 const AdminDeliveryPrice = () => {
-    const [value, setValue] = useState(false); 
+    const [actualDeliveryTime, setActualDeliveryTime] = useState(false); 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const auth = useContext(AuthContext);
 
     const [formState, inputHandler] = useForm(
         {
-          value: {
+          deliveryTime: {
             value: '',
             isValid: false
         }
@@ -29,28 +29,28 @@ const AdminDeliveryPrice = () => {
       );
 
     useEffect(() => {
-        const fetchValue = async () => {
+        const fetchDeliveryTime = async () => {
             try {
               const responseData = await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
+                `${process.env.REACT_APP_BACKEND_URL}/api/deliverytime/${process.env.REACT_APP_DELIVERY_TIME_ID}`
               );
-              setValue(responseData.delivery_price);
+              setActualDeliveryTime(responseData.deliveryTime.time);
             
         } catch (err) {}
           
     };
-    fetchValue();
+    fetchDeliveryTime();
       }, [sendRequest])
     
 
-    const valueSubmitHandler = async event => {
+    const deliveryTimeSubmitHandler = async event => {
         event.preventDefault();
           try {
             await sendRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`,
+              `${process.env.REACT_APP_BACKEND_URL}/api/deliverytime/${process.env.REACT_APP_DELIVERY_TIME_ID}`,
               'PATCH',
               JSON.stringify({
-                value: parseInt(formState.inputs.value.value)
+                time: parseInt(formState.inputs.deliveryTime.value)
               }),
               {
                 Authorization: 'Bearer ' + auth.token,
@@ -67,23 +67,23 @@ const AdminDeliveryPrice = () => {
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Zmień wartość opłaty za dowóz</h2>
-                {value && <form
-                onSubmit={valueSubmitHandler}
+                <h2>Zmień czas dowozu</h2>
+                {actualDeliveryTime && <form
+                onSubmit={deliveryTimeSubmitHandler}
                 >
                     <Input 
-                    id="value"
+                    id="deliveryTime"
                     element="input"
                     type="number"
-                    label="Minimalna wartość opłaty za dowóz (zł)"
+                    label="Czas dowozu (min)"
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
-                    initialValue={value.value}
+                    initialValue={actualDeliveryTime}
                     /> 
                     <Button type="submit"
                     >
-                    ZMIEŃ WARTOŚĆ
+                    ZMIEŃ CZAS
                     </Button> 
                 </form>}
                 </React.Fragment>

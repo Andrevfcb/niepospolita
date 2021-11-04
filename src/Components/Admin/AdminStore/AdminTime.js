@@ -140,9 +140,7 @@ const AdminTime = () => {
                     type="number"
                     min={0}
                     max={23}
-                    // label="Minimalna wartość zamówienia"
                     validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
                     initialValue={time.time.start.hour}
                     />
@@ -153,9 +151,7 @@ const AdminTime = () => {
                     type="number"
                     min={0}
                     max={59}
-                    // label="Minimalna wartość zamówienia"
                     validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
                     initialValue={time.time.start.minute}
                     />
@@ -168,9 +164,7 @@ const AdminTime = () => {
                     type="number"
                     min={0}
                     max={23}
-                    // label="Godzina"
                     validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
                     initialValue={time.time.end.hour}
                     />
@@ -181,9 +175,7 @@ const AdminTime = () => {
                     type="number"
                     min={0}
                     max={59}
-                    // label="Minimalna wartość zamówienia"
                     validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
                     initialValue={time.time.end.minute}
                     />
@@ -194,7 +186,6 @@ const AdminTime = () => {
                     
                     </div>
                     <Button type="submit"
-                    // disabled={!formState.isValid}
                     >
                     ZMIEŃ GODZINY
                     </Button>

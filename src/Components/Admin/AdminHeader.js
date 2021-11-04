@@ -41,7 +41,6 @@ const AdminHeader = () => {
               }),
               {
                 'Content-Type': 'application/json'
-                //  + auth.token
               }
             );
             auth.login(responseData.userId, responseData.token, responseData.role);
@@ -63,8 +62,6 @@ const AdminHeader = () => {
                     element="input"
                     type="email"
                     label="login:"
-                    // validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="Wprowadź login."
                     onInput={inputHandler}
                 />
                 <Input 
@@ -72,8 +69,6 @@ const AdminHeader = () => {
                     element="input"
                     type="text"
                     label="hasło:"
-                    // validators={[VALIDATOR_REQUIRE()]}
-                    // errorText="wprowadź hasło."
                     onInput={inputHandler}
                 />
                 <Button type="submit"

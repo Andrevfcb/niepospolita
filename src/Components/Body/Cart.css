@@ -7,7 +7,6 @@
 }
 
 .cart h1 {
-    /* padding-bottom: 0.5em; */
     margin: 0;
     padding-top: 1.6em;
     text-shadow: 0 0.1em 0.1em black;
@@ -105,6 +104,15 @@
 
 .cart .item-card .total {
     width: 45%;
+}
+
+.bonus {
+    display: flex;
+    justify-content: center;
+}
+
+.cart .bonus-item {
+    align-items: flex-start;
 }
 
 @media (max-width: 1150px) {

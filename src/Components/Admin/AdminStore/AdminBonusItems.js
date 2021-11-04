@@ -12,7 +12,7 @@ import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
 import { AuthContext } from '../../../context/auth-context';
 
-const AdminDeliveryPrice = () => {
+const AdminBonusItems = () => {
     const [value, setValue] = useState(false); 
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -32,9 +32,9 @@ const AdminDeliveryPrice = () => {
         const fetchValue = async () => {
             try {
               const responseData = await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
+                `${process.env.REACT_APP_BACKEND_URL}/api/bonus-items/${process.env.REACT_APP_BONUS_ITEMS_PRICE_ID}`
               );
-              setValue(responseData.delivery_price);
+              setValue(responseData.bonus_items_price);
             
         } catch (err) {}
           
@@ -47,7 +47,7 @@ const AdminDeliveryPrice = () => {
         event.preventDefault();
           try {
             await sendRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`,
+              `${process.env.REACT_APP_BACKEND_URL}/api/bonus-items/${process.env.REACT_APP_BONUS_ITEMS_PRICE_ID}`,
               'PATCH',
               JSON.stringify({
                 value: parseInt(formState.inputs.value.value)
@@ -67,7 +67,7 @@ const AdminDeliveryPrice = () => {
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Zmień wartość opłaty za dowóz</h2>
+                <h2>Zmień minimalną wartość produktów gratis</h2>
                 {value && <form
                 onSubmit={valueSubmitHandler}
                 >
@@ -75,7 +75,7 @@ const AdminDeliveryPrice = () => {
                     id="value"
                     element="input"
                     type="number"
-                    label="Minimalna wartość opłaty za dowóz (zł)"
+                    label="Minimalna wartość produktów gratis (zł)"
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Wprowadź poprawną wartość."
                     onInput={inputHandler}
@@ -90,4 +90,4 @@ const AdminDeliveryPrice = () => {
     )
 }
 
-export default AdminDeliveryPrice
+export default AdminBonusItems

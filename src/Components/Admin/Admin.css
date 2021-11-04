@@ -1,8 +1,5 @@
 .admin {
     display: flex;
-    /* padding-top: 5em; */
-    /* justify-content: center; */
-    /* align-items: center; */
     min-height: 100vh;
     background-color: rgb(133, 131, 131);
 }
