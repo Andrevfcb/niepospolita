@@ -148,10 +148,9 @@ const Cart = () => {
     const showCartItems = cartItems.map(item => {
         const product = { id: item.id, name: item.name, price: item.price, image: item.image, description: item.description };
         const price = item.price * item.quantity
-
         return (
         <li className="item-card" key={item.id}>
-            <img src={`${process.env.REACT_APP_BACKEND_URL}/${item.image}`} alt={item.name}></img>
+            <img src={`${process.env.REACT_APP_AWS_URL}/${item.image}`} alt={item.name}></img>
             <span className="item-name">{item.name}</span>
             <span class="fas fa-minus item-quantity__handler" onClick={() => {
                 decrease(product)
@@ -163,10 +162,6 @@ const Cart = () => {
             <span class="fas fa-times item-remove" onClick={() => {removeProduct(product)}}></span>
         </li>
             )
-    })
-
-    const bonusItemsNames = bonusItems.map(item => {
-        return `${item.name}, `
     })
 
     const showBonusItems = bonusItems.map(item => {

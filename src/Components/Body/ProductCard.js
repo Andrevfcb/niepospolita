@@ -21,7 +21,7 @@ const ProductCard = ({id, name, price, image, description}) => {
             className="item-card"
             >
                 <div className="item-card__image">
-                <img src={`${process.env.REACT_APP_BACKEND_URL}/${image}`} alt={name}></img>
+                <img src={`${process.env.REACT_APP_AWS_URL}/${image}`} alt={name}></img>
                 </div>
                 <div className="item-card__info">
                 <p>
