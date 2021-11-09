@@ -6,6 +6,11 @@ const Navigation = () => {
     return (
         
     <ul className='nav'>
+        {/* <li className="main-navigation">
+            <NavLink to='/special'exact>
+            Kolacje degustacyjne
+            </NavLink>
+        </li> */}
         <li className="main-navigation">
             <NavLink to='/'exact>
             Zamów

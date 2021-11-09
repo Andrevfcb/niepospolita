@@ -21,6 +21,7 @@ import { useAuth } from './Components/hooks/auth-hook';
 import { AuthContext } from './context/auth-context';
 import Success from './Components/Body/Success';
 import Failed from './Components/Body/Failed';
+import SpecialReservation from './Components/Body/SpecialReservation';
 
 function App() {
 
@@ -35,6 +36,10 @@ function App() {
       <Route path="/koszyk">
       <Header />
       <Cart />
+      </Route>
+      <Route path="/special">
+      <Header />
+      <SpecialReservation />
       </Route>
       <Route path="/zamowienie">
       <Header />

@@ -5,55 +5,45 @@ import {
   } from '../../util/validators';
   import { useHttpClient } from '../../hooks/http-hook';
   import LoadingSpinner from "../../UIElements/LoadingSpinner"
-  import { AuthContext } from '../../../context/auth-context';
 
+import ImageUpload from "../../FormElements/ImageUpload"
 import Button from "../../FormElements/Button"
 import Input from '../../FormElements/Input';
 
 import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
+import { AuthContext } from '../../../context/auth-context';
 
-
-const AdminUpdateItem = () => {
-
-    const [categories, setCategories] = useState([]);
-    const [items, setItems] = useState([]);
-    const [item, setItem] = useState(false);
-    const [itemAvailability, setItemAvailability] = useState();
-    const [itemBonus, setItemBonus] = useState();
-    const [itemSpecial, setItemSpecial] = useState();
+const AdminSpecialReservation = () => {
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
     const auth = useContext(AuthContext);
+
+    const [reservation, setReservation] = useState([]);
+    const [reservationDay, setReservationDay] = useState([]);
+    const [reservationHour, setReservationHour] = useState([]);
 
     const [formState, inputHandler] = useForm(
         {
-          name: {
+          value: {
             value: '',
             isValid: false
-        },
-            description: {
-                value: '',
-                isValid: false
-        },
-            price: {
-                value: '',
-                isValid: false
-        },
-            category: {
-                value: '',
-                isValid: false
-        },
-            available: {
-                value: '',
-                isValid: false
-        },
+        }
         },
         false
       );
 
-    const [itemFormState, selectHandler] = useForm(
+    const [dayFormState, selectDayHandler] = useForm(
+        {
+            name: {
+              value: '',
+              isValid: false
+          }
+        },
+        false
+      );
+
+    const [hourFormState, selectHourHandler] = useForm(
         {
             name: {
               value: '',
@@ -64,106 +54,113 @@ const AdminUpdateItem = () => {
       );
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchSpecialReservation = async () => {
             try {
               const responseData = await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/api/category`
+                `${process.env.REACT_APP_BACKEND_URL}/api/reservation`
               );
       
-              setCategories(responseData.category);
+              setReservation(responseData.reservations);
         } catch (err) {}
           
     };
-    const fetchItems = async () => {
-        try {
-          const responseData = await sendRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/api/items`
-          );
-  
-          setItems(responseData.items);
-    } catch (err) {}
-      
-};
-    fetchCategories();
-    fetchItems();
+    fetchSpecialReservation();
       }, [sendRequest])
 
-      useEffect(() => {
+    useEffect(() => {
         
-            const fetchItem = async () => {
-                if(itemFormState.inputs.name.value) {
-                try {
-                  const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/api/items/${itemFormState.inputs.name.value}`
-                  );
-          
-                  setItem(responseData.item);
-                  setItemAvailability(responseData.item.available)
-                  setItemBonus(responseData.item.bonus)
-            } catch (err) {}      
-            } else return
-        }
-    fetchItem();
-      }, [sendRequest, itemFormState.inputs.name.value])
-    
-
-    const itemSubmitHandler = async event => {
-        event.preventDefault();
-          try {
-            await sendRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/api/items/${item.id}`,
-              'PATCH',
-              JSON.stringify({
-                name: formState.inputs.name.value,
-                description: formState.inputs.description.value,
-                price: formState.inputs.price.value,
-                category: formState.inputs.category.value,
-                available: itemAvailability,
-                bonus: itemBonus,
-                special: itemSpecial
-              }),
-              {
-                Authorization: 'Bearer ' + auth.token,
-                'Content-Type': 'application/json'
-              }
-            );
-                alert("Zaktualizowano produkt")
-                window.location.reload()
-          } catch (err) {}
-      };
-
-    const setOptions = categories.map(i => <option value={i.id}>{i.name}</option>)
-    const setItemOptions = items.map(i => <option value={i.id}>{i.name}</option>)
-
-    const changeAvailability = () => {
-        setItemAvailability(prevAvailibility => !prevAvailibility)
+        const fetchDay = async () => {
+            if(dayFormState.inputs.name.value) {
+            try {
+              const responseData = await sendRequest(
+                `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${dayFormState.inputs.name.value}`
+              );
+      
+              setReservationDay(responseData.reservation);
+            //   setItemAvailability(responseData.item.available)
+            //   setItemBonus(responseData.item.bonus)
+        } catch (err) {}      
+        } else return
     }
+    fetchDay();
+  }, [sendRequest, dayFormState.inputs.name.value])
 
-    const changeBonus = () => {
-      setItemBonus(prevBonus => !prevBonus)
+  useEffect(() => {
+        
+    const fetchHour = async () => {
+        if(hourFormState.inputs.name.value) {
+           const hour = reservationDay.hours.find(i => i.id === hourFormState.inputs.name.value)
+           setReservationHour(hour); 
+    } else return
+}
+fetchHour();
+}, [sendRequest, hourFormState.inputs.name.value])
+
+  const inputChange = (e) => {
+      e.preventDefault()
   }
 
-  const changeSpecial = () => {
-    setItemSpecial(prevSpecial => !prevSpecial)
-}
-    
+    // const setOptions = categories.map(i => <option value={i.id}>{i.name}</option>)
+    const setDaysOptions = reservation.days.map(i => <option value={i.id}>{i.name}</option>)
+    const setDaysOptions = reservation.days.map(i => <option value={i.id}>{i.name}</option>)
+    const setInputs = reservationDay.availableHours.map((i, id) => {
+        return (
+            <div key={id}>
+                <input
+                id={i.id}
+                value={i.guests}
+                ></input>
+            </div>
+        )
+    })
 
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Zaktualizuj danie / produkt</h2>
+            <h2>Zaktualizuj liczbę gości</h2>
                 <Input 
                     id="name"
                     element="select"
                     name="select"
-                    label="Wybierz Produkt"
+                    label="Wybierz dzień"
                     validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wybierz poprawny produkt."
-                    onInput={selectHandler}
-                    options={setItemOptions}
-                    />
-                {item && <form
+                    errorText="Wybierz dzień."
+                    onInput={selectDayHandler}
+                    options={setDaysOptions}
+                />
+                {reservationDay && <Input 
+                    id="name"
+                    element="select"
+                    name="select"
+                    label="Wybierz godzinę"
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText="Wybierz godzinę."
+                    onInput={selectHourHandler}
+                    options={setDaysOptions}
+                />
+                }
+                {reservationHour && <form
+                onSubmit={itemSubmitHandler}
+                >
+                    <Input 
+                    id="value"
+                    element="input"
+                    type="number"
+                    label="Wpisz maksymalną liczbę gości"
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText="Wpisz maksymalną liczbę gości."
+                    onInput={inputHandler}
+                    initialValue={reservationHour.guests}
+                /> 
+                <Button type="submit">
+                    ZMIEŃ LICZBĘ
+                </Button>
+                </form>
+                }
+
+
+                {reservationDay && <form
                 onSubmit={itemSubmitHandler}
                 >
                     <Input 
@@ -218,8 +215,8 @@ const AdminUpdateItem = () => {
                     ZMIEŃ
                     </Button>
                 </form>}
-                </React.Fragment>
+        </React.Fragment>
     )
 }
 
-export default AdminUpdateItem
+export default AdminSpecialReservation
