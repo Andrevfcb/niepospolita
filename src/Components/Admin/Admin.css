@@ -55,3 +55,7 @@
     width: 10%;
     display: inline;
 }
+
+.new-hour .form-control input {
+    width: 10%;
+}

@@ -6,6 +6,7 @@ import AdminBonus from './AdminStore/AdminBonus';
 import AdminCategory from './AdminStore/AdminCategory';
 import AdminDeleteItem from './AdminStore/AdminDeleteItem';
 import AdminDelivery from './AdminStore/AdminDelivery';
+import AdminSpecialReservation from './AdminStore/AdminSpecialReservation';
 import AdminUpdateItem from './AdminStore/AdminUpdate';
 import AdminValue from './AdminStore/AdminValue';
 
@@ -33,6 +34,7 @@ const AdminPanel = () => {
                 {section === "4" && <AdminValue />}
                 {section === "5" && <AdminDelivery />}
                 {section === "6" && <AdminBonus />}
+                {section === "7" && <AdminSpecialReservation />}
                 </div>
             </div>
         </React.Fragment>

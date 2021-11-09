@@ -15,6 +15,8 @@ const Store = () => {
     const [categories, setCategories] = useState([]);
     const [minOrderValue, setMinOrderValue] = useState();
     const [deliveryHours, setDeliveryHours] = useState(false);
+    const [deliveryPrice, setDeliveryPrice] = useState(false);
+    const [minBonusDeliveryPrice, setMinBonusDeliveryPrice] = useState(false);
     const [deliveryAvailable, setDeliveryAvailable] = useState(true);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const { today, dayId } = useDate();
@@ -65,6 +67,27 @@ const Store = () => {
                   setDeliveryAvailable(currentDayAvailibility)
                 } catch (err) {}
             } 
+            const fetchDeliveryPrice = async () => {
+                try {
+                  const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/delivery/${process.env.REACT_APP_DELIVERY_PRICE_ID}`
+                  );
+                  setDeliveryPrice(responseData.delivery_price);
+                
+            } catch (err) {}
+              
+        };
+        const getBonusDeliveryPrice = async () => {
+                
+            try {
+                const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/bonus-delivery/${process.env.REACT_APP_BONUS_DELIVERY_PRICE_ID}`
+                  );
+                  setMinBonusDeliveryPrice(responseData.bonus_delivery_price.value);
+            } catch (err) {}
+        }
+            getBonusDeliveryPrice()
+            fetchDeliveryPrice();
             fetchItems()
             fetchCategories()
             getMinOrderValue()
@@ -120,19 +143,21 @@ const Store = () => {
                 onClick={()=>console.log(deliveryAvailable)
                 }
                 >Zamów online!</h1>
-                <p>Minimalna kwota zamówienia: <b>{minOrderValue && minOrderValue.value} zł</b></p>
-
                 <p>
                     {today && today} - 
                     {!deliveryAvailable && <b style={{color: 'red'}}>W dzisiejszym dniu nie dowozimy!</b>}
                     {deliveryAvailable && <span> W dzisiejszym dniu dowozimy w godzinach <b>{deliveryHours && today && dayId && showDeliveryHours()}</b></span>}
                 </p>
+                <p>Minimalna kwota zamówienia: <b>{minOrderValue && minOrderValue.value} zł</b></p>
+                <p>Koszt dostawy: <b>{deliveryPrice && deliveryPrice.value} zł</b>. W przypadku dowozu poza Lublin koszt obliczany wg odległości.</p>
+                {minBonusDeliveryPrice && <p>Zamówienie powyżej <b>{minBonusDeliveryPrice} zł</b> <b style={{color: "lightgreen"}}>dostawa gratis!</b></p>}
+                
             </div>
             <Card>
             <div className="categories">
                 <h2>Wybierz kategorię</h2>
                 <ul style={{color: "white"}}>
-                    <li onClick={filterByCategory}>wszystko</li>
+                    <li onClick={filterByCategory}>WSZYSTKO</li>
                 {categories.length > 0 && categoryList}
                 </ul>
             </div>

@@ -3,9 +3,21 @@ import "./SpecialReservation.css"
 import { useHttpClient } from '../hooks/http-hook';
 import SpecialProductCard from './SpecialProductCard';
 import { TimePickerComponent } from '@syncfusion/ej2-react-calendars';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { useDate } from '../hooks/date-hook';
+import Input from '../FormElements/Input';
+import { VALIDATOR_REQUIRE } from '../util/validators';
+import { useForm } from '../hooks/form-hook';
 
 const SpecialReservation = () => {
+
+    const [reservation, setReservation] = useState([]);
+    const [available, setAvailable] = useState(false);
+    const [message, setMessage] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
+
 
     const [isClickedProduct, setIsClickedProduct] = useState(false);
     const [showReservation, setShowReservation] = useState(false);
@@ -16,6 +28,20 @@ const SpecialReservation = () => {
     const [items, setItems] = useState([]);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const { today, dayId, currentHour, currentMinute } = useDate();
+
+    const [formState, inputHandler] = useForm(
+        {
+            hour: {
+              value: '',
+              isValid: false
+          },
+          guests: {
+            value: '',
+            isValid: false
+        }
+        },
+        false
+    );
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -29,6 +55,17 @@ const SpecialReservation = () => {
                 setItems(filteredItems)
                 } catch (err) {}
             }
+            const fetchSpecialReservation = async () => {
+                try {
+                  const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/reservation`
+                  );
+                  setAvailable(responseData.reservations[0].available.value)
+                  setMessage(responseData.reservations[0].available.message)
+                  setReservation(responseData.reservations[0].days);
+            } catch (err) {}     
+        };
+        fetchSpecialReservation();
             fetchItems()
         }, [sendRequest] )
 
@@ -125,27 +162,40 @@ const SpecialReservation = () => {
                 })
             } return item_list
         }
-    
+
+        const setDaysOptions = reservation.map(i => <option value={i._id}>{i.name}</option>)
 
     return (
         <div className="special">
             {items.length > 0 && 
             <div className="special-items">
-            <h1>Wybierz produkt i zarezerwuj stolik</h1>
+            <h1
+            onClick={() => {console.log(new Date(), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 10))}}
+            // onClick={() => {console.log(new Date().setDate(new Date().getDate() + 10))}}
+            >Wybierz produkt i zarezerwuj stolik</h1>
             {itemList()}
             </div>
             }
             {specialItemCheckedId && <div className="special-reservation">
-            <label style={{fontWeight: 'bold', marginBottom: '0.5rem', minHeight: '28px'}}>Wybierz godzinę:</label>
-                <TimePickerComponent
-                    placeholder="wybierz godzinę"
-                    format="HH:mm"
-                    step={60}
-                    min={minTime}
-                    max={maxTime}
-                    onChange={handleTimeValue}
-                ></TimePickerComponent>
-                    
+            {/* <label style={{fontWeight: 'bold', marginBottom: '0.5rem', minHeight: '28px'}}>Wybierz godzinę:</label> */}
+            <Input 
+                id="name"
+                element="select"
+                name="select"
+                label="Wybierz godzinę:"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Proszę wybrać godzinę."
+                onInput={inputHandler}
+                options={setDaysOptions}
+            />
+            <DatePicker 
+            selected={startDate} 
+            onChange={(date) => setStartDate(date)}
+            dateFormat='dd/MM/yyyy' 
+            minDate={new Date()}
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 10)}
+            // maxDate={new Date().setDate(new Date().getDate() + 10)}
+            />
             </div>}
         </div>
     )

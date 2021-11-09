@@ -14,19 +14,24 @@ const ImageUpload = props => {
   const filePickerRef = useRef();
 
   useEffect(() => {
-    if (!file) {
+    if (!file && props.previewUrl) {
+      console.log(props.previewUrl);
+      const actualPrevievUrl = process.env.REACT_APP_AWS_URL + "/" + props.previewUrl
+      setPreviewUrl(actualPrevievUrl)
+    } else if (!file) {
       return;
+    } else {
+      const fileReader = new FileReader();
+      let allImages = images
+      fileReader.onload = () => {
+        if (props.id === "images") {
+          allImages.push(fileReader.result)
+          setImages(allImages);
+        }
+        setPreviewUrl(fileReader.result);
+      };
+      fileReader.readAsDataURL(file);
     }
-    const fileReader = new FileReader();
-    let allImages = images
-    fileReader.onload = () => {
-      if (props.id === "images") {
-        allImages.push(fileReader.result)
-        setImages(allImages);
-      }
-      setPreviewUrl(fileReader.result);
-    };
-    fileReader.readAsDataURL(file);
   }, [file]);
   
   const pickedHandler = event => {
@@ -51,9 +56,8 @@ const ImageUpload = props => {
       fileIsValid = false;
     }
     let onInputImgValue
-    if (props.id === "images") {onInputImgValue = newImagesValue} else {onInputImgValue = pickedFile}
-    if (props.id === "image") console.log("image" );
-    else if (!(props.id === "image")) console.log("images" );
+    if (props.id === "images") {onInputImgValue = newImagesValue} 
+    else {onInputImgValue = pickedFile}
     
     props.onInput(props.id, onInputImgValue, fileIsValid);
   };

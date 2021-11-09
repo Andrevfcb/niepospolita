@@ -13,6 +13,7 @@ import Input from '../../FormElements/Input';
 import { useForm } from "../../hooks/form-hook"
 import ErrorModal from "../../UIElements/ErrorModal"
 import { AuthContext } from '../../../context/auth-context';
+import Modal from '../../UIElements/Modal';
 
 const AdminSpecialReservation = () => {
 
@@ -20,18 +21,11 @@ const AdminSpecialReservation = () => {
     const auth = useContext(AuthContext);
 
     const [reservation, setReservation] = useState([]);
-    const [reservationDay, setReservationDay] = useState([]);
-    const [reservationHour, setReservationHour] = useState([]);
-
-    const [formState, inputHandler] = useForm(
-        {
-          value: {
-            value: '',
-            isValid: false
-        }
-        },
-        false
-      );
+    const [reservationDay, setReservationDay] = useState(false);
+    const [availableHours, setAvailableHours] = useState([]);
+    const [available, setAvailable] = useState(false);
+    const [message, setMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     const [dayFormState, selectDayHandler] = useForm(
         {
@@ -43,15 +37,19 @@ const AdminSpecialReservation = () => {
         false
       );
 
-    const [hourFormState, selectHourHandler] = useForm(
+    const [formState, inputHandler] = useForm(
         {
-            name: {
+            hour: {
               value: '',
               isValid: false
-          }
+          },
+          guests: {
+            value: '',
+            isValid: false
+        }
         },
         false
-      );
+    );
 
     useEffect(() => {
         const fetchSpecialReservation = async () => {
@@ -59,57 +57,131 @@ const AdminSpecialReservation = () => {
               const responseData = await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/api/reservation`
               );
-      
-              setReservation(responseData.reservations);
-        } catch (err) {}
-          
+              setAvailable(responseData.reservations[0].available.value)
+              setMessage(responseData.reservations[0].available.message)
+              setReservation(responseData.reservations[0].days);
+        } catch (err) {}     
     };
     fetchSpecialReservation();
       }, [sendRequest])
 
     useEffect(() => {
-        
         const fetchDay = async () => {
             if(dayFormState.inputs.name.value) {
             try {
               const responseData = await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${dayFormState.inputs.name.value}`
               );
-      
               setReservationDay(responseData.reservation);
-            //   setItemAvailability(responseData.item.available)
-            //   setItemBonus(responseData.item.bonus)
+              const hours = responseData.reservation.availableHours
+              const sortHours = hours.sort((a, b) => {
+               return a.hour - b.hour})
+              console.log(sortHours);
+              setAvailableHours(sortHours)
         } catch (err) {}      
         } else return
     }
     fetchDay();
   }, [sendRequest, dayFormState.inputs.name.value])
 
-  useEffect(() => {
-        
-    const fetchHour = async () => {
-        if(hourFormState.inputs.name.value) {
-           const hour = reservationDay.hours.find(i => i.id === hourFormState.inputs.name.value)
-           setReservationHour(hour); 
-    } else return
-}
-fetchHour();
-}, [sendRequest, hourFormState.inputs.name.value])
-
   const inputChange = (e) => {
       e.preventDefault()
+      const hourId = availableHours.find(i => i._id === e.target.id);
+      const newGuests = parseInt(e.target.value)
+      hourId.guests = newGuests
+      const newAvailableHours = {
+        ...availableHours
+      }
+      setAvailableHours(Object.values(newAvailableHours))
+  }
+  const deleteInput = (e) => {
+    const hourId = availableHours.find(i => i._id === e.target.id);
+    const newAvailableHours = availableHours.filter(i => !(i === hourId));
+    setAvailableHours(Object.values(newAvailableHours))
+  }
+  const changeAvailability = () => {
+    setMessage('')
+    setAvailable(prevAvailable => !prevAvailable)
+  }
+  const messageHandler = (e) => {
+    setMessage(e.target.value)
   }
 
-    // const setOptions = categories.map(i => <option value={i.id}>{i.name}</option>)
-    const setDaysOptions = reservation.days.map(i => <option value={i.id}>{i.name}</option>)
-    const setDaysOptions = reservation.days.map(i => <option value={i.id}>{i.name}</option>)
-    const setInputs = reservationDay.availableHours.map((i, id) => {
+  const submitHandler = async (e) => {
+    e.preventDefault()
+    const newAvailable = {
+      value: available,
+      message
+    }
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${reservationDay._id}`,
+        'PATCH',
+        JSON.stringify({
+          available: newAvailable,
+          availableHours
+        }),
+        {
+          Authorization: 'Bearer ' + auth.token,
+          'Content-Type': 'application/json'
+        }
+      );
+          alert("Zaktualizowano produkt")
+          window.location.reload()
+    } catch (err) {}
+  }
+
+  const submitNewHourHandler = async (e) => {
+    e.preventDefault()
+    console.log(formState.inputs.hour.value, formState.inputs.guests.value);
+    
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${reservationDay._id}`,
+        'POST',
+        JSON.stringify({
+          hour: formState.inputs.hour.value,
+          guests: formState.inputs.guests.value
+        }),
+        {
+          Authorization: 'Bearer ' + auth.token,
+          'Content-Type': 'application/json'
+        }
+      );
+          alert("Dodano godzinę")
+          window.location.reload()
+    } catch (err) {}
+  }
+
+  const closeModalHandler = () => {
+    setShowModal(false)
+  }
+
+  const openModalHandler = () => {
+    setShowModal(true)
+  }
+
+    const setDaysOptions = reservation.map(i => <option value={i._id}>{i.name}</option>)
+    const setInputs = availableHours.map((i, id) => {
         return (
             <div key={id}>
-                <input
-                id={i.id}
-                value={i.guests}
+              <p>
+                <span style={{color: "black", fontWeight: "bold"}}>Godzina {i.hour}:00 - </span>
+                <span style={{color: "black", fontWeight: "bold"}}>Liczba gości:</span>
+              <input
+                style={{margin: "0 1em", width: "10%", textAlign: "center"}}
+                type="number"
+                id={i._id}
+                value={availableHours[id].guests}
+                onChange={inputChange}
                 ></input>
+                <span 
+                id={i._id}
+                class="fas fa-times" 
+                style={{cursor: 'pointer'}} 
+                onClick={deleteInput}
+                ></span>
+              </p>
             </div>
         )
     })
@@ -118,8 +190,55 @@ fetchHour();
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverlay />}
-            <h2>Zaktualizuj liczbę gości</h2>
-                <Input 
+            <Modal
+            show={showModal}
+            onCancel={closeModalHandler}
+            header={
+              <h2>Nowa Godzina</h2>
+            }
+            contentClass="place-item__modal-content"
+            footerClass="place-item__modal-actions"
+            footer={<Button onClick={closeModalHandler}>ZAMKNIJ</Button>}
+            >
+            <React.Fragment>
+            <ErrorModal error={error} onClear={clearError} />
+            {isLoading && <LoadingSpinner asOverlay />}
+            <form 
+              className="new-hour"
+              onSubmit={submitNewHourHandler}
+            >
+                <Input
+                id="hour"
+                element="input"
+                type="number"
+                label="Godzina"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Wprowadź poprawną godzinę."
+                onInput={inputHandler}
+                ></Input>
+                <Input
+                id="guests"
+                element="input"
+                type="number"
+                label="Liczba gości"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Wprowadź poprawną liczbę gości."
+                onInput={inputHandler}
+                ></Input>
+                <Button 
+                 type="submit"
+                 disabled={!formState.isValid}
+                 onClick={submitNewHourHandler}
+                >DODAJ
+                </Button>
+              </form>
+            </React.Fragment>
+            </Modal>
+
+
+            <h2 onClick={() => console.log(availableHours)
+            }>Zaktualizuj liczbę gości</h2>
+                {reservation.length > 0 && <Input 
                     id="name"
                     element="select"
                     name="select"
@@ -128,93 +247,28 @@ fetchHour();
                     errorText="Wybierz dzień."
                     onInput={selectDayHandler}
                     options={setDaysOptions}
-                />
-                {reservationDay && <Input 
-                    id="name"
-                    element="select"
-                    name="select"
-                    label="Wybierz godzinę"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wybierz godzinę."
-                    onInput={selectHourHandler}
-                    options={setDaysOptions}
-                />
+                />}
+                {reservationDay && <div>
+                {setInputs}
+                <Button 
+                onClick={openModalHandler}
+                >Dodaj godzinę</Button>
+                </div>
                 }
-                {reservationHour && <form
-                onSubmit={itemSubmitHandler}
+                <form 
+                onSubmit={submitHandler}
                 >
-                    <Input 
-                    id="value"
-                    element="input"
-                    type="number"
-                    label="Wpisz maksymalną liczbę gości"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wpisz maksymalną liczbę gości."
-                    onInput={inputHandler}
-                    initialValue={reservationHour.guests}
-                /> 
-                <Button type="submit">
-                    ZMIEŃ LICZBĘ
+                <div style={{borderTop: '1px solid', borderBottom: '1px solid', color: 'black'}}>
+                  <label for='available' style={{fontWeight: 'bold', padding: '0.5em', display: 'block'}}>Dostępność:</label>
+                  <input id='available' type='checkbox' onChange={changeAvailability} checked={available} style={{display: 'block', margin: '0.5em auto'}} />
+                  {!available && <p><span>Wiadomość:</span><textarea onChange={messageHandler} value={message} style={{display: 'block', margin: '0.5em auto'}}/></p>}
+                </div>
+                <Button 
+                type="submit">
+                  ZAKTUALIZUJ
                 </Button>
                 </form>
-                }
-
-
-                {reservationDay && <form
-                onSubmit={itemSubmitHandler}
-                >
-                    <Input 
-                    id="name"
-                    element="input"
-                    type="text"
-                    label="Nazwa produktu"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wprowadź poprawną nazwę."
-                    onInput={inputHandler}
-                    initialValue={item.name}
-                    />
-                    <Input 
-                    id="description"
-                    element="textarea"
-                    type="text"
-                    label="Opis produktu"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wprowadź poprawny opis."
-                    onInput={inputHandler}
-                    initialValue={item.description}
-                    />
-                    <Input 
-                    id="price"
-                    element="input"
-                    type="number"
-                    label="Cena"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wprowadź poprawną cenę."
-                    onInput={inputHandler}
-                    initialValue={item.price}
-                    />
-                    {categories.length > 0 && <Input 
-                    id="category"
-                    element="select"
-                    name="select"
-                    label="Kategoria"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    errorText="Wprowadź poprawną kategorię."
-                    onInput={inputHandler}
-                    options={setOptions}
-                    initialValue={item.category}
-                    />}
-                    <label for='availability' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt dostępny?</label>
-                    <input id='availability' type='checkbox' onChange={changeAvailability} checked={itemAvailability} style={{display: 'block', margin: 'auto'}} />
-                    <label for='bonus' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt gratis?</label>
-                    <input id='bonus' type='checkbox' onChange={changeBonus} checked={itemBonus} style={{display: 'block', margin: 'auto'}} />
-                    <label for='special' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Kolacje degustacyjne?</label>
-                    <input id='special' type='checkbox' onChange={changeSpecial} checked={itemSpecial} style={{display: 'block', margin: 'auto'}} />
-                    <Button type="submit"
-                    >
-                    ZMIEŃ
-                    </Button>
-                </form>}
+                
         </React.Fragment>
     )
 }

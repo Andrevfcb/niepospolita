@@ -11,6 +11,7 @@ const AdminNav = ({ changeSection }) => {
                 <li id={4} onClick={changeSection}>Min. wartość zamówienia</li>
                 <li id={5} onClick={changeSection}>Dowóz</li>
                 <li id={6} onClick={changeSection}>Min. wartości gratis</li>
+                <li id={7} onClick={changeSection}>Kolacje degustacyjne</li>
             </ul>
         
     )

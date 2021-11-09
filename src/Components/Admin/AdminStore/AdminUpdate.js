@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-
+import ImageUpload from "../../FormElements/ImageUpload"
 import {
     VALIDATOR_REQUIRE
   } from '../../util/validators';
@@ -45,10 +45,10 @@ const AdminUpdateItem = () => {
                 value: '',
                 isValid: false
         },
-            available: {
-                value: '',
-                isValid: false
-        },
+        // image: {
+        //   value: null,
+        //   isValid: false
+        // }
         },
         false
       );
@@ -100,6 +100,7 @@ const AdminUpdateItem = () => {
                   setItem(responseData.item);
                   setItemAvailability(responseData.item.available)
                   setItemBonus(responseData.item.bonus)
+                  setItemSpecial(responseData.item.special)
             } catch (err) {}      
             } else return
         }
@@ -176,6 +177,13 @@ const AdminUpdateItem = () => {
                     onInput={inputHandler}
                     initialValue={item.name}
                     />
+                    {/* <ImageUpload
+                    center
+                    id="image"
+                    onInput={inputHandler}
+                    previewUrl={item.image}
+                    errorText="Wprowadź zdjęcie produktu."
+                    /> */}
                     <Input 
                     id="description"
                     element="textarea"
@@ -213,7 +221,9 @@ const AdminUpdateItem = () => {
                     <input id='bonus' type='checkbox' onChange={changeBonus} checked={itemBonus} style={{display: 'block', margin: 'auto'}} />
                     <label for='special' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Kolacje degustacyjne?</label>
                     <input id='special' type='checkbox' onChange={changeSpecial} checked={itemSpecial} style={{display: 'block', margin: 'auto'}} />
-                    <Button type="submit"
+                    <Button 
+                    type="submit"
+                    // disabled={!formState.isValid}
                     >
                     ZMIEŃ
                     </Button>
