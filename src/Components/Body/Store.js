@@ -24,14 +24,13 @@ const Store = () => {
     useEffect(() => {
         window.scrollTo(0, 0)
         const fetchItems = async () => {
-                
                 try {
                     const responseData = await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/api/items/`
                   );
-                
-                setItems(responseData.items)
-                setAllItems(responseData.items)
+                const filteredItems = responseData.items.filter(i => !(i.category === "INNE"))
+                setItems(filteredItems)
+                setAllItems(filteredItems)
                 } catch (err) {}
             }
             const fetchCategories = async () => {
@@ -40,8 +39,8 @@ const Store = () => {
                     const responseData = await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/api/category/`
                   );
-                
-                setCategories(responseData.category)
+                const storeCategories = responseData.category.filter(cat => !(cat.name === "INNE"))
+                setCategories(storeCategories)
                 } catch (err) {}
             } 
             const getMinOrderValue = async () => {
@@ -109,7 +108,7 @@ const Store = () => {
 
     const filterByCategory = (e) => {
         let filteredItems
-        if (e.target.innerHTML === "wszystko") {
+        if (e.target.innerHTML === "WSZYSTKO") {
             filteredItems = allItems
         } else {
             const categoryValue = e.target.innerHTML.toLowerCase()
@@ -139,10 +138,7 @@ const Store = () => {
         <div className="store"
         >
             <div className="store-info">
-                <h1
-                onClick={()=>console.log(deliveryAvailable)
-                }
-                >Zamów online!</h1>
+                <h1>Zamów online!</h1>
                 <p>
                     {today && today} - 
                     {!deliveryAvailable && <b style={{color: 'red'}}>W dzisiejszym dniu nie dowozimy!</b>}
