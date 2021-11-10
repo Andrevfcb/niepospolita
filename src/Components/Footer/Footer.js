@@ -13,7 +13,7 @@ const Footer = () => {
             <a href= "https://niepospolita-lublin.com" className="logo-link" exact>
             <div className="footer-logo logo title">
               <img src={Logo} alt="logo" className="logo"></img>
-              <span>Powrót na stronę główną</span>
+              <span className="footer-title">Powrót na stronę główną</span>
             </div>
             </a>
             <div className="footer-menu">

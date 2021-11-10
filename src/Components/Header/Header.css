@@ -131,6 +131,14 @@
           flex-direction: column;
       }
 
+      #drawer-hook .nav li {
+        margin: 0 0.5em;
+        font-size: 2em;
+        cursor: pointer;
+        font-weight: bold;
+        
+    }
+
     #drawer-hook .nav li a {
           color: #b39809;
       }

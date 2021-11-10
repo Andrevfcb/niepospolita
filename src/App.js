@@ -75,7 +75,8 @@ function App() {
       }}
     >
       <CartContextProvider>
-      <div className="App" style={{backgroundImage: `url(${background})`, backgroundColor: "black", minHeight: "100vh", display: "flex", flexDirection: "column"}}>
+      <div className="App" 
+      style={{backgroundColor: "black", minHeight: "100vh", display: "flex", flexDirection: "column"}}>
         {routes}
       <Footer />
       </div>
