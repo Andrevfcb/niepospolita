@@ -29,8 +29,57 @@ const Store = () => {
                     `${process.env.REACT_APP_BACKEND_URL}/api/items/`
                   );
                 const filteredItems = responseData.items.filter(i => !(i.category === "INNE"))
-                setItems(filteredItems)
-                setAllItems(filteredItems)
+                const sortItemsByName = filteredItems.sort((a, b) => a.name > b.name ? 1 : -1)
+                const sortItemsByCategory = sortItemsByName.sort((a, b) => {
+                    let aCatValue
+                    let bCatValue
+                    if (a.category === "PRZYSTAWKI") {
+                        aCatValue = 0
+                    } else if (a.category === "ZUPY") {
+                        aCatValue = 1
+                    } else if (a.category === "SAŁATY") {
+                        aCatValue = 2
+                    } else if (a.category === "DANIA GŁÓWNE") {
+                        aCatValue = 3
+                    } else if (a.category === "BURGERY I KANAPKI") {
+                        aCatValue = 4
+                    } else if (a.category === "DODATKI") {
+                        aCatValue = 5
+                    } else if (a.category === "DANIA DLA DZIECI") {
+                        aCatValue = 6
+                    } else if (a.category === "DESERY") {
+                        aCatValue = 7
+                    } else aCatValue = 10
+
+                    if (b.category === "PRZYSTAWKI") {
+                        bCatValue = 0
+                    } else if (b.category === "ZUPY") {
+                        bCatValue = 1
+                    } else if (b.category === "SAŁATY") {
+                        bCatValue = 2
+                    } else if (b.category === "DANIA GŁÓWNE") {
+                        bCatValue = 3
+                    } else if (b.category === "BURGERY I KANAPKI") {
+                        bCatValue = 4
+                    } else if (b.category === "DODATKI") {
+                        bCatValue = 5
+                    } else if (b.category === "DANIA DLA DZIECI") {
+                        bCatValue = 6
+                    } else if (b.category === "DESERY") {
+                        bCatValue = 7
+                    } else bCatValue = 10
+                    if ( aCatValue < bCatValue ){
+                    return -1;
+                    }
+                    if ( aCatValue > bCatValue ){
+                    return 1;
+                    }
+                  return 0;})
+                // console.log(filteredItems);
+                console.log(sortItemsByCategory);
+                
+                setItems(sortItemsByCategory)
+                setAllItems(sortItemsByCategory)
                 } catch (err) {}
             }
             const fetchCategories = async () => {
@@ -99,8 +148,8 @@ const Store = () => {
         let availableItems
         if(items) {
             availableItems = items.filter(item => item.available === true)
-            sortItems = availableItems.sort((a, b) => a.name > b.name ? 1 : -1)
-            item_list = sortItems.map(i => {
+            // sortItems = availableItems.sort((a, b) => a.name > b.name ? 1 : -1)
+            item_list = availableItems.map(i => {
             return (<ProductCard key={i.id} id={i.id} name={i.name} price={i.price} description={i.description} image={i.image} category={i.category} available={i.available} />)
     })
     } return item_list
