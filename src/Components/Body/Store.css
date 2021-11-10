@@ -57,12 +57,12 @@
 
 .store .item-card {
     margin: 2em 1em;
-    height: 45vh;
+    height: 50vh;
     transition: 1s;
     text-align: center;
     display: flex;
     flex-direction: column;
-    min-width: 25vw;
+    width: 25vw;
 }
 
 .store .item-card:hover {
@@ -70,8 +70,8 @@
 }
 
 .store .item-card__image {
-    flex-grow: 1;
-    height: 70%;
+    /* flex-grow: 1; */
+    height: 50%;
 }
 
 .store .item-card img {
@@ -91,14 +91,18 @@
     margin: 0;
 }
 
-.store .item-card__info p {
+.store .item-card__info .name {
     width: 100%;
     padding: 0.2em;
-    font-size: 1.3em;
+    font-size: 1.1em;
     margin: 0.5em 0;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     color: white;
+}
+
+.store .item-card__info .description {
+    color: wheat;
 }
 
 .store .categories {

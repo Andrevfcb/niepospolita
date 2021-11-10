@@ -144,7 +144,7 @@ const Store = () => {
 
     const itemList = () => {
         let item_list
-        let sortItems
+        // let sortItems
         let availableItems
         if(items) {
             availableItems = items.filter(item => item.available === true)

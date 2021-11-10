@@ -24,9 +24,14 @@ const ProductCard = ({id, name, price, image, description}) => {
                 <img src={`${process.env.REACT_APP_AWS_URL}/${image}`} alt={name}></img>
                 </div>
                 <div className="item-card__info">
-                <p>
-                    <span style={{fontWeight: "bold"}}>{name}</span>
-                    <span style={{fontWeight: "bold"}}>{price} zł</span>
+                <p className="name price">
+                    <span style={{fontWeight: "bold", 
+                    maxWidth: "70%"
+                    }}>{name}</span>
+                    <span style={{fontWeight: "bold", marginLeft: "0.7em"}}>{price} zł</span>
+                </p>
+                <p className="description">
+                    {description}
                 </p>
                 {
                     !isInCart(product, cartItems) && <Button onClick={() => {
