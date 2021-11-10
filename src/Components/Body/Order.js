@@ -329,8 +329,7 @@ const Order = () => {
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="order">
-                <h1 onClick={() => console.log(cartItems, total, bonusItem)
-                }>Uzupełnij dane do zamówienia</h1>
+                <h1>Uzupełnij dane do zamówienia</h1>
                 <Card>
                 {!isToLateToOrder &&  
                 <form

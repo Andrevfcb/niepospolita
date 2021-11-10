@@ -166,7 +166,7 @@ const Cart = () => {
 
     const showBonusItems = bonusItems.map(item => {
         return <li className="item-card bonus-item" key={item._id}>
-            {/* <img src={`${process.env.REACT_APP_AWS_URL}/${item.image}`} alt={item.image}></img> */}
+            <img src={`${process.env.REACT_APP_AWS_URL}/${item.image}`} alt={item.image}></img>
             <div>
                 <span>{item.name}</span>
                 <input id={item._id} type='checkbox' 
