@@ -81,9 +81,7 @@ const AdminBonusDelivery = () => {
                     onInput={inputHandler}
                     initialValue={value.value}
                     /> 
-                    <Button type="submit"
-                    // disabled={!formState.isValid}
-                    >
+                    <Button type="submit">
                     ZMIEŃ WARTOŚĆ
                     </Button> 
                 </form>}

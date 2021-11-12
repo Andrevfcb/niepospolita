@@ -15,8 +15,6 @@ const AdminPanel = () => {
     const [section, setSection] = useState("0");
 
     const changeSection = (e) => {
-        console.log(e.target.id);
-        
         setSection(e.target.id);
     }
 

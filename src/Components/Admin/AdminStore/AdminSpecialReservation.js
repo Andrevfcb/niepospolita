@@ -6,7 +6,6 @@ import {
   import { useHttpClient } from '../../hooks/http-hook';
   import LoadingSpinner from "../../UIElements/LoadingSpinner"
 
-import ImageUpload from "../../FormElements/ImageUpload"
 import Button from "../../FormElements/Button"
 import Input from '../../FormElements/Input';
 
@@ -76,7 +75,6 @@ const AdminSpecialReservation = () => {
               const hours = responseData.reservation.availableHours
               const sortHours = hours.sort((a, b) => {
                return a.hour - b.hour})
-              console.log(sortHours);
               setAvailableHours(sortHours)
         } catch (err) {}      
         } else return
@@ -133,7 +131,6 @@ const AdminSpecialReservation = () => {
 
   const submitNewHourHandler = async (e) => {
     e.preventDefault()
-    console.log(formState.inputs.hour.value, formState.inputs.guests.value);
     
     try {
       await sendRequest(
@@ -236,8 +233,7 @@ const AdminSpecialReservation = () => {
             </Modal>
 
 
-            <h2 onClick={() => console.log(availableHours)
-            }>Zaktualizuj liczbę gości</h2>
+            <h2>Zaktualizuj liczbę gości</h2>
                 {reservation.length > 0 && <Input 
                     id="name"
                     element="select"

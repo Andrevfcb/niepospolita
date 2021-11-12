@@ -94,8 +94,6 @@ const Cart = () => {
         const orderValidation = {valid: false, message: ''}
         if(cartItems && deliveryHours && today && dayId && currentHour && currentMinute) {
             const currentDay = deliveryHours.find(time => time._id === dayId)
-            // const startHour = currentDay.time.start.hour
-            // const startMinute = currentDay.time.start.minute
             const endHour = currentDay.time.end.hour
             const endMinute = currentDay.time.end.minute
             
@@ -105,11 +103,7 @@ const Cart = () => {
                 } else if (total < minOrderValue.value) {
                     orderValidation.valid = false
                     orderValidation.message = `Minimalna kwota zamówienia to ${minOrderValue.value} zł`
-                } 
-                // else if (startHour > currentHour || endHour < currentHour || (startHour === currentHour && startMinute >= currentMinute) || (endHour === currentHour && endMinute <= currentMinute)) {
-                // orderValidation.valid = false
-                // orderValidation.message = `W dzisiejszym dniu dania można zamawiać od ${startHour < 10 ? '0' + startHour : startHour }:${startMinute < 10 ? '0' + startMinute : startMinute} do ${endHour < 10 ? '0' + endHour : endHour }:${endMinute < 10 ? '0' + endMinute : endMinute}`
-                // }
+                }
                 else if (endHour < currentHour || (endHour === currentHour && endMinute <= currentMinute)) {
                     orderValidation.valid = false
                     orderValidation.message = `W dzisiejszym dniu już nie dowozimy. Zapraszamy ponownie.`
@@ -129,7 +123,6 @@ const Cart = () => {
         Geocode.fromAddress("Eiffel Tower").then(
         (response) => {
           const { lat, lng } = response.results[0].geometry.location;
-          console.log(lat, lng);
         },
         (error) => {
           console.error(error);
@@ -184,8 +177,7 @@ const Cart = () => {
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="cart">
-                <h1 onClick={() => console.log(bonusItem)}
-                >Twój koszyk</h1>
+                <h1>Twój koszyk</h1>
                 {cartItems.length > 0 &&<div className="cart-info">
                     <p>Koszt dowozu: <b>{deliveryPrice && deliveryPrice} zł</b>, w przypadku dowozu poza Lublin koszt obliczany wg odległości.</p>
                     {minBonusDeliveryPrice && <p>Zamówienie powyżej {minBonusDeliveryPrice} zł <b style={{color: "lightgreen"}}>dostawa gratis!</b></p>}
@@ -197,7 +189,6 @@ const Cart = () => {
                     <span className='item-name'>Produkt</span>
                     <span className='item-quantity-title'>Ilość</span>
                     <span className='item-price-title'>Cena</span>
-                    {/* <span style={{width: '10%', marginLeft: '5px'}}></span> */}
             </li>
                 {showCartItems}
             <li className="item-card summary ">

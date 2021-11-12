@@ -88,7 +88,6 @@ const AdminAddItem = () => {
 
     const setOptions = categories.map(i => <option value={i.id}>{i.name}</option>)
     
-
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />

@@ -6,7 +6,7 @@ import { useHttpClient } from '../hooks/http-hook';
 import ErrorModal from "../UIElements/ErrorModal";
 import { CartContext } from '../../context/cart-context';
 import Card from '../UIElements/Card';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useStripe } from '@stripe/react-stripe-js'
 import { TimePickerComponent } from '@syncfusion/ej2-react-calendars'
 import { useDate } from '../hooks/date-hook';
@@ -123,10 +123,6 @@ const Order = () => {
 
     const [formState, inputHandler] = useForm(
         {
-        //   name: {
-        //     value: '',
-        //     isValid: false
-        // },
             street: {
                 value: '',
                 isValid: false
@@ -231,16 +227,11 @@ const Order = () => {
                 apartament: false
             }
         }
+        let message
         if (!!formState.inputs.message.value) {
-            address = {
-                ...address,
-                message: formState.inputs.message.value
-            }
+            message = formState.inputs.message.value
         } else {
-            address = {
-                ...address,
-                message: "brak"
-            }
+            message = 'brak'
         }
         if (event.target.id === "payment-online" && !isToLateToOrder) {
             try {
@@ -250,10 +241,11 @@ const Order = () => {
                     JSON.stringify({
                         line_items,
                         customer_email: formState.inputs.email.value,
-                        message: formState.inputs.message.value,
+                        message,
                         deliveryHour: timepickerValue.toString(),
                         phone: formState.inputs.phoneNumber.value,
                         address,
+                        productName: '',
                         option: 'order'
                     }),
                     {

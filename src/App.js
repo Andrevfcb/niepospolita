@@ -1,7 +1,5 @@
 import React, { Suspense } from 'react';
 import AdminHeader from "./Components/Admin/AdminHeader";
-import Admin from "./Components/Admin/AdminPanel";
-
 import {
   HashRouter as Router,
   Route,
@@ -12,16 +10,17 @@ import Header from './Components/Header/Header';
 import Footer from './Components/Footer/Footer';
 import Store from './Components/Body/Store';
 import CartContextProvider from './context/cart-context';
-import Cart from './Components/Body/Cart';
-import Order from './Components/Body/Order';
-
-import background from './images/50.jpg'
-
 import { useAuth } from './Components/hooks/auth-hook';
 import { AuthContext } from './context/auth-context';
-import Success from './Components/Body/Success';
-import Failed from './Components/Body/Failed';
-import SpecialReservation from './Components/Body/SpecialReservation';
+import LoadingSpinner from './Components/UIElements/LoadingSpinner';
+
+const Cart = React.lazy(() => import('./Components/Body/Cart'));
+const Order = React.lazy(() => import('./Components/Body/Order'));
+const SpecialReservation = React.lazy(() => import('./Components/Body/SpecialReservation'));
+const Success = React.lazy(() => import('./Components/Body/Success'));
+const SuccessReservation = React.lazy(() => import('./Components/Body/SuccessReservation'));
+const Failed = React.lazy(() => import('./Components/Body/Failed'));
+const Admin = React.lazy(() => import('./Components/Admin/AdminPanel'));
 
 function App() {
 
@@ -48,6 +47,10 @@ function App() {
       <Route path="/success">
       <Header />
       <Success />
+      </Route>
+      <Route path="/success-reservation">
+      <Header />
+      <SuccessReservation />
       </Route>
       <Route path="/failed">
       <Header />
@@ -77,7 +80,9 @@ function App() {
       <CartContextProvider>
       <div className="App" 
       style={{backgroundColor: "black", minHeight: "100vh", display: "flex", flexDirection: "column"}}>
-        {routes}
+        <Suspense fallback={<div className="center"><LoadingSpinner /></div>}>
+          {routes}
+          </Suspense>
       <Footer />
       </div>
       </CartContextProvider>

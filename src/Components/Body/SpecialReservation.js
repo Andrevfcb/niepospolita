@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "./SpecialReservation.css"
 import { useHttpClient } from '../hooks/http-hook';
 import SpecialProductCard from './SpecialProductCard';
-import { TimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-import { useDate } from '../hooks/date-hook';
+import { useStripe } from '@stripe/react-stripe-js'
 import Input from '../FormElements/Input';
 import { VALIDATOR_REQUIRE, VALIDATOR_MIN, VALIDATOR_MAX } from '../util/validators';
 import { useForm } from '../hooks/form-hook';
 import Button from '../FormElements/Button';
+
+import LoadingSpinner from "../UIElements/LoadingSpinner"
+import ErrorModal from "../UIElements/ErrorModal"
 
 const SpecialReservation = () => {
 
@@ -22,6 +23,8 @@ const SpecialReservation = () => {
     const [specialItemCheckedId, setSpecialItemCheckedId] = useState(false);
     const [items, setItems] = useState([]);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const stripe = useStripe();
+    const formElements = useRef()
 
     const [formState, inputHandler] = useForm(
         {
@@ -30,6 +33,14 @@ const SpecialReservation = () => {
               isValid: false
           },
           guests: {
+            value: '',
+            isValid: false
+        },
+          email: {
+            value: '',
+            isValid: false
+        },
+        phone: {
             value: '',
             isValid: false
         }
@@ -79,10 +90,11 @@ const SpecialReservation = () => {
 
         const changeClickedProductId = (e) => {
             e.preventDefault();
-            if (specialItemCheckedId === e.target.id) {
+            if (specialItemCheckedId === e.target.value) {
                 return setSpecialItemCheckedId(false)
             } else {
             setSpecialItemCheckedId(e.target.value)
+            formElements.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
         }
 
@@ -103,7 +115,7 @@ const SpecialReservation = () => {
             let line_items
             if (items && specialItemCheckedId) {
                 line_items = 
-                    {
+                    [{
                         quantity: 1,
                         price_data: {
                             currency: "pln",
@@ -113,40 +125,43 @@ const SpecialReservation = () => {
                                 description: items[specialItemCheckedId].description
                         }  
                     }
-                }
+                }]
             }
-            console.log(line_items);
-            
-
-            // let address = {
-            //     street: '',
-            //     local: '',
-            //     zipCode: '',
-            //     city: ''
-            // }
-            
-            //     try {
-            //         const responseData = await sendRequest(
-            //             `${process.env.REACT_APP_BACKEND_URL}/api/checkout/`,
-            //             'POST',
-            //             JSON.stringify({
-            //                 line_items,
-            //                 customer_email: formState.inputs.email.value,
-            //                 message: formState.inputs.message.value,
-            //                 deliveryHour: '',
-            //                 phone: formState.inputs.phoneNumber.value,
-            //                 address,
-            //                 option: 'reservation'
-            //             }),
-            //             {
-            //               'Content-Type': 'application/json'
-            //             }
-            //         );
-            //         const { sessionId } = responseData
-            //         await stripe.redirectToCheckout({
-            //             sessionId
-            //         })
-            //     } catch (err) {}
+            const day = startDate.getDate()
+            const month = startDate.getMonth() + 1
+            const year = startDate.getFullYear()
+            const message = `Data: ${day}/${month}/${year} - Godzina: ${formState.inputs.hour.value}:00 - liczba osób: ${formState.inputs.guests.value}`
+            let address = {
+                street: '',
+                local: '',
+                zipCode: '',
+                city: '',
+                message
+            }
+            const productName = items[specialItemCheckedId].name
+                try {
+                    const responseData = await sendRequest(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/checkout/`,
+                        'POST',
+                        JSON.stringify({
+                            line_items,
+                            customer_email: formState.inputs.email.value,
+                            message,
+                            deliveryHour: '',
+                            phone: formState.inputs.phone.value,
+                            address,
+                            productName,
+                            option: 'reservation'
+                        }),
+                        {
+                          'Content-Type': 'application/json'
+                        }
+                    );
+                    const { sessionId } = responseData
+                    await stripe.redirectToCheckout({
+                        sessionId
+                    })
+                } catch (err) {}
             
           };
 
@@ -154,18 +169,21 @@ const SpecialReservation = () => {
 
     return (
         <div className="special">
-            {items.length > 0 && 
+        <ErrorModal error={error} onClear={clearError} />
+        {isLoading && <LoadingSpinner asOverlay />}
+        {available && <div>
+        {items.length > 0 && 
             <div className="special-items">
-            <h1
-            onClick={() => console.log(items)
-            }
-            >Wybierz produkt i zarezerwuj stolik</h1>
+            <h1>Wybierz produkt i zarezerwuj stolik</h1>
             {itemList()}
             </div>
             }
-            {specialItemCheckedId && <form 
+            <div ref={formElements}></div>
+            {specialItemCheckedId && <form
             onSubmit={formSubmitHandler}
             className="special-reservation">
+                <h2 style={{margin: '0'}}>Uzupełnij dane:</h2>
+                <p style={{margin: '0.5em 0 1em 0'}}>Wybrano: {specialItemCheckedId && items[specialItemCheckedId].name}</p>
             <label style={{
                 fontWeight: 'bold', 
                 marginBottom: '0.5em', 
@@ -201,19 +219,42 @@ const SpecialReservation = () => {
                 id="guests"
                 element="input"
                 type="number"
-                label={`Wybierz liczbę gości: 
-                ${maxGuests > 0 && formState.inputs.hour.isValid ? `(na godzinę ${formState.inputs.hour.value}:00 maksymalna liczba gości - ${maxGuests})`: ''}`}
+                label={`Wybierz liczbę osób: 
+                ${maxGuests > 0 && formState.inputs.hour.isValid ? `(na godzinę ${formState.inputs.hour.value}:00 maksymalna liczba osób - ${maxGuests})`: ''}`}
                 validators={[VALIDATOR_MIN(0), VALIDATOR_MAX(maxGuests)]}
-                errorText={`Nieprawidłowa liczba gości`}
+                errorText={`Nieprawidłowa liczba osób`}
                 onInput={inputHandler}
                 options={setHourOptions}
             />
-
-            <Button
-            type="submit"
-            disabled={startDate && !formState.isValid}
+            <Input 
+                id="email"
+                element="input"
+                type="email"
+                label="Podaj email:"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Nieprawidłowy email."
+                onInput={inputHandler}
             />
+            <Input 
+                id="phone"
+                element="input"
+                type="text"
+                label="Podaj nr telefonu:"
+                validators={[VALIDATOR_REQUIRE()]}
+                errorText="Nieprawidłowy nr telefonu."
+                onInput={inputHandler}
+            />
+            <Button
+                type="submit"
+                disabled={startDate && (!formState.isValid || !formState.inputs.hour.isValid || !formState.inputs.guests.isValid)}
+            >
+                Zarezerwuj i Zapłać
+                </Button>
             </form>}
+        </div>}
+            {!available && <div>
+                <h2 style={{marginTop: "5em"}}>{message ? message : 'Brak możliwości rezerwacji'}</h2>
+            </div>}
         </div>
     )
 }

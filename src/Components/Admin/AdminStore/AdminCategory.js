@@ -76,16 +76,12 @@ const AdminCategory = () => {
                 }
               );
             alert("Usunięto Kategorię")
-            
             window.location.reload()
             } catch (err) {}
         }
 
     const choseDeletedCatId = (e) => {
-        console.log(e.target.value);
-        
-        setCatId(e.target.value)
-              }
+        setCatId(e.target.value)}
 
     const setOptions = categories.map(i => <option value={i._id}>{i.name}</option>)
 

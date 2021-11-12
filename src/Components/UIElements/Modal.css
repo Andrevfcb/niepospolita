@@ -47,7 +47,6 @@
 .modal__footer {
   padding: 1rem 0.5rem;
   background: #2a006e;
-  /* display: none; */
 }
 
 @media (min-width: 768px) {

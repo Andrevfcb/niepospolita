@@ -10,7 +10,6 @@ const inputReducer = (state, action) => {
         ...state,
         value: action.val,
         isValid: action.validators ? validate(action.val, action.validators) : true
-        // isValid: validate(action.val, action.validators)
       };
     case 'TOUCH': {
       return {
@@ -58,7 +57,6 @@ const Input = props => {
         type={props.type}
         min={props.min}
         max={props.max}
-        // checked={inputState.value}
         placeholder={props.placeholder}
         onChange={changeHandler}
         onBlur={touchHandler}

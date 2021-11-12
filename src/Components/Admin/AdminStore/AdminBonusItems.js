@@ -81,8 +81,7 @@ const AdminBonusItems = () => {
                     onInput={inputHandler}
                     initialValue={value.value}
                     /> 
-                    <Button type="submit"
-                    >
+                    <Button type="submit">
                     ZMIEŃ WARTOŚĆ
                     </Button> 
                 </form>}
