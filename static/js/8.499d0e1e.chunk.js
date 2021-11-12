@@ -1,0 +1,2 @@
+(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[8],{166:function(e,t,s){"use strict";s.r(t);s(1);var c=s(9),n=(s(41),s(0));t.default=function(){return Object(n.jsxs)("div",{className:"store",children:[Object(n.jsx)("h1",{children:"WYST\u0104PI\u0141 NIEOCZEKIWANY B\u0141\u0104D, SPR\xd3BUJ ZAM\xd3WI\u0106 PONOWNIE P\xd3\u0179NIEJ"}),Object(n.jsx)("br",{}),Object(n.jsx)(c.b,{to:"/",children:Object(n.jsx)("p",{children:"powr\xf3t do sklepu"})})]})}}}]);
+//# sourceMappingURL=8.499d0e1e.chunk.js.map
