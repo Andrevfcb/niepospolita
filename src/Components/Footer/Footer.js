@@ -17,7 +17,7 @@ const Footer = () => {
             </div>
             </a>
             <div className="footer-menu">
-                <h3>MENU</h3>
+                {/* <h3>MENU</h3> */}
                 <ul className='nav'>
                     <li className="main-navigation">
                     <NavLink to='/'exact>
@@ -28,6 +28,11 @@ const Footer = () => {
                     <NavLink to='/koszyk'exact>
                     Koszyk
                     </NavLink>
+                    </li>
+                    <li className="main-navigation">
+                    <a href='https://niepospolita-lublin.com/regulamin/'exact>
+                    Regulamin
+                    </a>
                     </li>
                 </ul>
             </div>

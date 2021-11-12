@@ -131,18 +131,6 @@
 }
 
 @media (max-width: 850px) {
-    /* .store .item-card {
-        height: initial;
-    } */
-
-    /* .store .item-card__image {
-        height: 30%;
-    } */
-
-    /* .store .item-card__info {
-        height: initial;
-    } */
-
     .store .item-card {
         width: 50vw;
     }

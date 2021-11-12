@@ -253,7 +253,8 @@ const Order = () => {
                         message: formState.inputs.message.value,
                         deliveryHour: timepickerValue.toString(),
                         phone: formState.inputs.phoneNumber.value,
-                        address
+                        address,
+                        option: 'order'
                     }),
                     {
                       'Content-Type': 'application/json'

@@ -36,6 +36,7 @@ const Button = props => {
       disabled={props.disabled}
       id={props.id || null}
       name={props.payment || null}
+      value={props.id}
     >
       {props.children}
     </button>
