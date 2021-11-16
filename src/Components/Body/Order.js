@@ -30,6 +30,8 @@ const Order = () => {
     const [maxTime, setMaxTime] = useState();
     const [isToLateToOrder, setIsToLateToOrder] = useState(false);
     const [paymentOffline, setPaymentOffline] = useState(false);
+    const [minBonusDeliveryPrice, setMinBonusDeliveryPrice] = useState(false);
+    const [minBonusItemsPrice, setMinBonusItemsPrice] = useState(false);
 
     const [deliveryHours, setDeliveryHours] = useState(false);
     const stripe = useStripe();
@@ -59,8 +61,28 @@ const Order = () => {
                   setDeliveryHours(responseData.time)
                 } catch (err) {}
             } 
+            const getBonusItemsPrice = async () => {
+                
+                try {
+                    const responseData = await sendRequest(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/bonus-items/${process.env.REACT_APP_BONUS_ITEMS_PRICE_ID}`
+                      );
+                      setMinBonusItemsPrice(responseData.bonus_items_price.value);
+                } catch (err) {}
+            }
+            const getBonusDeliveryPrice = async () => {
+                
+                try {
+                    const responseData = await sendRequest(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/bonus-delivery/${process.env.REACT_APP_BONUS_DELIVERY_PRICE_ID}`
+                      );
+                      setMinBonusDeliveryPrice(responseData.bonus_delivery_price.value);
+                } catch (err) {}
+            }
             getDeliveryPrice()
             getDeliveryHours()
+            getBonusItemsPrice()
+            getBonusDeliveryPrice()
     }, [sendRequest])
 
     useEffect(() => {
@@ -195,8 +217,12 @@ const Order = () => {
                     }
                 }  
             }
+
+            if (total <= minBonusDeliveryPrice) {
+                line_items.push(delivery_price)
+            }
             
-            if (total >= 80 && bonusItem) {
+            if (total >= minBonusItemsPrice && bonusItem) {
                 line_items.push({
                     quantity: 1,
                     price_data: {
@@ -205,8 +231,6 @@ const Order = () => {
                         product_data: {
                             name: bonusItem.item + " gratis"
                         }}})
-            } else if (total <= 60) {
-                line_items.push(delivery_price)
             }
         }
         
@@ -262,7 +286,7 @@ const Order = () => {
             let delivery_info
             let totalAmount
             const paymentMethod = event.target.name
-            if (total && deliveryPrice && total <= 60 ) {
+            if (total && deliveryPrice && total <= minBonusDeliveryPrice ) {
                 delivery_info = deliveryPrice + "zł"
                 totalAmount = total + deliveryPrice
             } else {
@@ -270,7 +294,7 @@ const Order = () => {
                 totalAmount = total
             }
             let bonusItemName = 'brak'
-            if(bonusItem && total > 80 ) {
+            if(bonusItem && total > minBonusItemsPrice ) {
                 bonusItemName = bonusItem.item
             }
             
@@ -283,11 +307,13 @@ const Order = () => {
                         customer_phoneNumber: formState.inputs.phoneNumber.value,
                         customer_address: address,
                         customer_items,
+                        message,
                         total: totalAmount,
                         delivery_info,
                         bonusItemName,
                         timepickerValue,
-                        paymentMethod
+                        paymentMethod,
+                        option: 'order'
                     }),
                     {
                       'Content-Type': 'application/json'

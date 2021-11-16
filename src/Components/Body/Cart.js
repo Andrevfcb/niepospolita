@@ -9,8 +9,6 @@ import { CartContext } from '../../context/cart-context';
 import Card from '../UIElements/Card';
 import { Link } from 'react-router-dom';
 
-import Geocode from "react-geocode";
-
 const Cart = () => {
 
     const [orderValid, setOrderValid] = useState({valid: false, message: ''})
@@ -118,18 +116,6 @@ const Cart = () => {
             )
     }, [cartItems, deliveryHours, today, dayId, currentHour, currentMinute, total, minOrderValue])
 
-    const getCoordinates = () => {
-        Geocode.setApiKey('AIzaSyCC2-7o0QiPK0-IoueeS0VgFOgUbWNE_Gw')
-        Geocode.fromAddress("Eiffel Tower").then(
-        (response) => {
-          const { lat, lng } = response.results[0].geometry.location;
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    }
-
     const checkProductQuantity = (quantity, product) => {
         if(quantity <= 0) removeProduct(product)
     }
@@ -149,7 +135,7 @@ const Cart = () => {
                 decrease(product)
                 checkProductQuantity(item.quantity, product)
                 }}></span>
-            <span class="item-quantity" onClick={() => {getCoordinates()}}>{item.quantity}</span>
+            <span class="item-quantity">{item.quantity}</span>
             <span class="fas fa-plus item-quantity__handler" onClick={() => {increase(product)}}></span>
             <span class="item-price">{price.toFixed(2)} zł</span>
             <span class="fas fa-times item-remove" onClick={() => {removeProduct(product)}}></span>
@@ -180,6 +166,7 @@ const Cart = () => {
                 <h1>Twój koszyk</h1>
                 {cartItems.length > 0 &&<div className="cart-info">
                     <p>Koszt dowozu: <b>{deliveryPrice && deliveryPrice} zł</b>, w przypadku dowozu poza Lublin koszt obliczany wg odległości.</p>
+                    <p>Cena produktów zawiera koszt opakowania jednorazowego</p>
                     {minBonusDeliveryPrice && <p>Zamówienie powyżej {minBonusDeliveryPrice} zł <b style={{color: "lightgreen"}}>dostawa gratis!</b></p>}
                     {bonusItems.length > 0 && minBonusItemsPrice && <p >Zamówienie powyżej {minBonusItemsPrice} zł <b style={{color: "lightgreen"}}>produkt gratis!</b></p>}
                 </div>}

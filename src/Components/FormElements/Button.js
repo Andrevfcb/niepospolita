@@ -30,7 +30,7 @@ const Button = props => {
   return (
     <button
       className={`button button--${props.size || 'default'} ${props.inverse &&
-        'button--inverse'} ${props.danger && 'button--danger'} ${props.active && 'button--active'} ${props.isClicked && "button--active"}`}
+        'button--inverse'} ${props.danger && 'button--danger'} ${props.active && 'button--active'} `}
       type={props.type}
       onClick={props.onClick}
       disabled={props.disabled}

@@ -6,16 +6,17 @@ const Navigation = () => {
     return (
         
     <ul className='nav'>
-        {/* <li className="main-navigation">
-            <NavLink to='/special'exact>
-            Kolacje degustacyjne
-            </NavLink>
-        </li> */}
         <li className="main-navigation">
             <NavLink to='/'exact>
             Zamów
             </NavLink>
         </li>
+        <li className="main-navigation">
+            <NavLink to='/special'exact>
+            Menu degustacyjne
+            </NavLink>
+        </li>
+        
         <li className="main-navigation">
             <NavLink to='/koszyk'exact>
             <span class="fas fa-shopping-cart"></span>

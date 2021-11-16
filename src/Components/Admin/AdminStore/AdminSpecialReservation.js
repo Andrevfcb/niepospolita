@@ -56,8 +56,7 @@ const AdminSpecialReservation = () => {
               const responseData = await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/api/reservation`
               );
-              setAvailable(responseData.reservations[0].available.value)
-              setMessage(responseData.reservations[0].available.message)
+              
               setReservation(responseData.reservations[0].days);
         } catch (err) {}     
     };
@@ -72,6 +71,8 @@ const AdminSpecialReservation = () => {
                 `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${dayFormState.inputs.name.value}`
               );
               setReservationDay(responseData.reservation);
+              setAvailable(responseData.reservation.available.value)
+              setMessage(responseData.reservation.available.message)
               const hours = responseData.reservation.availableHours
               const sortHours = hours.sort((a, b) => {
                return a.hour - b.hour})
@@ -120,11 +121,11 @@ const AdminSpecialReservation = () => {
           availableHours
         }),
         {
-          Authorization: 'Bearer ' + auth.token,
+          // Authorization: 'Bearer ' + auth.token,
           'Content-Type': 'application/json'
         }
       );
-          alert("Zaktualizowano produkt")
+          alert("Zaktualizowano")
           window.location.reload()
     } catch (err) {}
   }
@@ -232,7 +233,6 @@ const AdminSpecialReservation = () => {
             </React.Fragment>
             </Modal>
 
-
             <h2>Zaktualizuj liczbę gości</h2>
                 {reservation.length > 0 && <Input 
                     id="name"
@@ -251,7 +251,7 @@ const AdminSpecialReservation = () => {
                 >Dodaj godzinę</Button>
                 </div>
                 }
-                <form 
+                {reservationDay && <form 
                 onSubmit={submitHandler}
                 >
                 <div style={{borderTop: '1px solid', borderBottom: '1px solid', color: 'black'}}>
@@ -263,7 +263,7 @@ const AdminSpecialReservation = () => {
                 type="submit">
                   ZAKTUALIZUJ
                 </Button>
-                </form>
+                </form>}
                 
         </React.Fragment>
     )

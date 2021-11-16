@@ -47,10 +47,14 @@
 
 @media (max-width: 500px) {
     .footer a {
-        font-size: 0.8em;
+        font-size: 0.6em;
     }
 
     .footer-title {
         display: none;
+    }
+
+    .nav li {
+        margin: 0;
     }
 }

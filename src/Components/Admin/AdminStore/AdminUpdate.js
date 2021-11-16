@@ -207,7 +207,7 @@ const AdminUpdateItem = () => {
                     <input id='availability' type='checkbox' onChange={changeAvailability} checked={itemAvailability} style={{display: 'block', margin: 'auto'}} />
                     <label for='bonus' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Produkt gratis?</label>
                     <input id='bonus' type='checkbox' onChange={changeBonus} checked={itemBonus} style={{display: 'block', margin: 'auto'}} />
-                    <label for='special' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Kolacje degustacyjne?</label>
+                    <label for='special' style={{fontWeight: 'bold', marginBottom: '0.5rem'}}>Menu degustacyjne?</label>
                     <input id='special' type='checkbox' onChange={changeSpecial} checked={itemSpecial} style={{display: 'block', margin: 'auto'}} />
                     <Button 
                     type="submit"
