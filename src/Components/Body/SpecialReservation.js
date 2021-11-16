@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./SpecialReservation.css"
 import { useHttpClient } from '../hooks/http-hook';
 import SpecialProductCard from './SpecialProductCard';
@@ -14,12 +14,15 @@ import { useHistory } from 'react-router-dom';
 import LoadingSpinner from "../UIElements/LoadingSpinner"
 import ErrorModal from "../UIElements/ErrorModal"
 
+
 const SpecialReservation = () => {
 
     const [reservation, setReservation] = useState({availableHours: []});
+    const [excludeDates, setExcludeDates] = useState([]);
     const [available, setAvailable] = useState(false);
     const [message, setMessage] = useState('');
-    const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1));
+    const [startDate, setStartDate] = useState();
+    // const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1));
     const [maxGuests, setMaxGuests] = useState(0)
     const [specialItem, setSpecialItem] = useState([]);
     const [items, setItems] = useState([]);
@@ -91,6 +94,45 @@ const SpecialReservation = () => {
                   const responseData = await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/api/reservation`
                   );
+                  let availableDays = []
+                  responseData.reservations[0].days.map(day => {
+                      const name = day.name
+                      let value
+                      if(name === "Sunday") {
+                          value = 0
+                      } else if(name === "Monday") {
+                        value = 1
+                    } else if(name === "Tuesday") {
+                        value = 2
+                    } else if(name === "Wednesday") {
+                        value = 3
+                    } else if(name === "Thursday") {
+                        value = 4
+                    } else if(name === "Friday") {
+                        value = 5
+                    } else if(name === "Saturday") {
+                        value = 6
+                    }
+                      const availability = day.available.value
+                    return availableDays.push({
+                        day: value,
+                        available: availability
+                    })
+                  })
+                  let disabledDates = []
+                  let minDate = 6
+                  availableDays.map(day => {
+                    const disabledDateYear = new Date().getFullYear()
+                    const disabledDateMonth = new Date().getMonth()
+                    const disabledDateDay = new Date().getDate() + 1 + day.day
+                    const date = new Date(disabledDateYear, disabledDateMonth, disabledDateDay)
+                    const dateDay = date.getDay()
+                    const foundDay = availableDays.find(day => day.day === dateDay);
+                    if(foundDay.available === true && day.day < minDate) return minDate = day.day
+                    if(dateDay === foundDay.day && foundDay.available === false) return disabledDates.push(date)
+                })
+                if (!startDate) {setStartDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1 + minDate))}
+                  setExcludeDates(disabledDates)
                   setAvailable(responseData.reservations[0].days[day].available.value)
                   setMessage(responseData.reservations[0].days[day].available.message)
                   setReservation(responseData.reservations[0].days[day]);
@@ -254,7 +296,7 @@ const SpecialReservation = () => {
                   } catch (err) {}
               }
       };
-        const itemList = items.map((i, id) => {
+    const itemList = items.map((i, id) => {
             let quantity
             if (menus.length > 0) {
                 quantity = menus[id].quantity
@@ -263,9 +305,9 @@ const SpecialReservation = () => {
                 />)
             })
    
-        const filteredHours = reservation.availableHours.filter(i => !(i.guests === 0))
-        const setHourOptions = filteredHours.map(i => <option value={i.hour}>{i.hour}:00</option>)
-        const chosenMenus = menus.map(menu => {
+    const filteredHours = reservation.availableHours.filter(i => !(i.guests === 0))
+    const setHourOptions = filteredHours.map(i => <option value={i.hour}>{i.hour}:00</option>)
+    const chosenMenus = menus.map(menu => {
             if (menu.chosen) return (<p style={{color: 'white'}}>
                 {menu.name} - Ilość: {menu.quantity} - Cena: {menu.price * menu.quantity} zł
             </p>)
@@ -275,10 +317,11 @@ const SpecialReservation = () => {
         <div className="special">
         <ErrorModal error={error} onClear={clearError} />
         {isLoading && <LoadingSpinner asOverlay />}
-        {available && <div>
+        <div>
         {items.length > 0 && 
             <div className="special-items">
-            <h1>Wybierz menu i zarezerwuj stolik</h1>
+            <h1
+            >Wybierz menu i zarezerwuj stolik</h1>
             {itemList}
             </div>
             }
@@ -297,7 +340,7 @@ const SpecialReservation = () => {
                 }}>Wybierz datę:</label>
             <DatePicker 
             id="date"
-            selected={startDate} 
+            selected={startDate}
             onChange={(date) => {
                 setStartDate(date)
                 formState.inputs.hour.value = ''
@@ -306,9 +349,12 @@ const SpecialReservation = () => {
                 formState.inputs.guests.isValid = false
                 setMaxGuests(0)
             }}
+            excludeDates={
+                excludeDates
+            }
             dateFormat='dd/MM/yyyy' 
             minDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1)}
-            maxDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 10)}
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7)}
             />
             <Input 
                 id="hour"
@@ -364,10 +410,10 @@ const SpecialReservation = () => {
                 Zapłać online
                 </Button>
             </form>}
-        </div>}
-            {!available && <div>
+        </div>
+            {/* {!available && <div>
                 <h2 style={{marginTop: "5em"}}>{message ? message : 'Brak możliwości rezerwacji'}</h2>
-            </div>}
+            </div>} */}
         </div>
     )
 }
