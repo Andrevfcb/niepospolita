@@ -168,6 +168,10 @@
     .store .item-card__info .description {
         font-size: 0.8em;
     }
+
+    .reservation h2 {
+        font-size: 1.5em;
+    }
 }
 
 @media (max-width: 400px) {

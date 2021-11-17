@@ -38,10 +38,10 @@ const SpecialReservation = () => {
               value: '',
               isValid: false
           },
-          guests: {
-            value: '',
-            isValid: false
-        },
+        //   guests: {
+        //     value: '',
+        //     isValid: false
+        // },
           email: {
             value: '',
             isValid: false
@@ -213,7 +213,8 @@ const SpecialReservation = () => {
         const day = startDate.getDate()
         const month = startDate.getMonth() + 1
         const year = startDate.getFullYear()
-        const message = `Data: ${day}/${month}/${year} - Godzina: ${formState.inputs.hour.value}:00 - liczba osób: ${formState.inputs.guests.value}`
+        const message = `Data: ${day}/${month}/${year} - Godzina: ${formState.inputs.hour.value}:00`
+        // const message = `Data: ${day}/${month}/${year} - Godzina: ${formState.inputs.hour.value}:00 - liczba osób: ${formState.inputs.guests.value}`
         let address = {
             street: '',
             local: '',
@@ -222,29 +223,29 @@ const SpecialReservation = () => {
             message
         }
         const productName = ''
-        const newAvailable = {
-            value: true,
-            message
-          }
+        // const newAvailable = {
+        //     value: true,
+        //     message
+        //   }
           
-          const chosenHour = reservation.availableHours.find(hour => hour.hour === parseInt(formState.inputs.hour.value))
-          chosenHour.guests = chosenHour.guests - parseInt(formState.inputs.guests.value)
-          let newHours = [
-              ...reservation.availableHours
-          ]
-          try {
-            await sendRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${reservation._id}`,
-              'PATCH',
-              JSON.stringify({
-                available: newAvailable,
-                availableHours: newHours
-              }),
-              {
-                'Content-Type': 'application/json'
-              }
-            );
-          } catch (err) {}
+        //   const chosenHour = reservation.availableHours.find(hour => hour.hour === parseInt(formState.inputs.hour.value))
+        //   chosenHour.guests = chosenHour.guests - parseInt(formState.inputs.guests.value)
+        //   let newHours = [
+        //       ...reservation.availableHours
+        //   ]
+        //   try {
+        //     await sendRequest(
+        //       `${process.env.REACT_APP_BACKEND_URL}/api/reservation/${reservation._id}`,
+        //       'PATCH',
+        //       JSON.stringify({
+        //         available: newAvailable,
+        //         availableHours: newHours
+        //       }),
+        //       {
+        //         'Content-Type': 'application/json'
+        //       }
+        //     );
+        //   } catch (err) {}
             if (event.target.id === 'payment-online') {
                 try {
                     const responseData = await sendRequest(
@@ -291,7 +292,7 @@ const SpecialReservation = () => {
                           'Content-Type': 'application/json'
                         }
                     );
-                    await history.push("/success")
+                    await history.push("/success-reservation")
                     window.location.reload()
                   } catch (err) {}
               }
@@ -345,8 +346,8 @@ const SpecialReservation = () => {
                 setStartDate(date)
                 formState.inputs.hour.value = ''
                 formState.inputs.hour.isValid = false
-                formState.inputs.guests.value = ''
-                formState.inputs.guests.isValid = false
+                // formState.inputs.guests.value = ''
+                // formState.inputs.guests.isValid = false
                 setMaxGuests(0)
             }}
             excludeDates={
@@ -366,7 +367,7 @@ const SpecialReservation = () => {
                 onInput={inputHandler}
                 options={setHourOptions}
             />
-            <Input 
+            {/* <Input 
                 id="guests"
                 element="input"
                 type="number"
@@ -375,8 +376,7 @@ const SpecialReservation = () => {
                 validators={[VALIDATOR_MIN(0), VALIDATOR_MAX(maxGuests)]}
                 errorText={`Nieprawidłowa liczba osób`}
                 onInput={inputHandler}
-                options={setHourOptions}
-            />
+            /> */}
             <Input 
                 id="email"
                 element="input"
@@ -398,14 +398,22 @@ const SpecialReservation = () => {
             <Button
                 id="payment-offline"
                 onClick={formSubmitHandler}
-                disabled={startDate && (!formState.isValid || !formState.inputs.hour.isValid || !formState.inputs.guests.isValid || formState.inputs.guests.value === '0' || specialItem.length <= 0)}
+                disabled={startDate && (!formState.isValid || 
+                    !formState.inputs.hour.isValid || 
+                    // !formState.inputs.guests.isValid || 
+                    // formState.inputs.guests.value === '0' || 
+                    specialItem.length <= 0)}
             >
                 Zapłać na miejscu
                 </Button>
             <Button
                 id="payment-online"
                 onClick={formSubmitHandler}
-                disabled={startDate && (!formState.isValid || !formState.inputs.hour.isValid || !formState.inputs.guests.isValid || formState.inputs.guests.value === '0' || specialItem.length <= 0)}
+                disabled={startDate && (!formState.isValid || 
+                    !formState.inputs.hour.isValid || 
+                    // !formState.inputs.guests.isValid || 
+                    // formState.inputs.guests.value === '0' || 
+                    specialItem.length <= 0)}
             >
                 Zapłać online
                 </Button>

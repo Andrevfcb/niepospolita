@@ -42,10 +42,10 @@ const AdminSpecialReservation = () => {
               value: '',
               isValid: false
           },
-          guests: {
-            value: '',
-            isValid: false
-        }
+        //   guests: {
+        //     value: '',
+        //     isValid: false
+        // }
         },
         false
     );
@@ -83,16 +83,16 @@ const AdminSpecialReservation = () => {
     fetchDay();
   }, [sendRequest, dayFormState.inputs.name.value])
 
-  const inputChange = (e) => {
-      e.preventDefault()
-      const hourId = availableHours.find(i => i._id === e.target.id);
-      const newGuests = parseInt(e.target.value)
-      hourId.guests = newGuests
-      const newAvailableHours = {
-        ...availableHours
-      }
-      setAvailableHours(Object.values(newAvailableHours))
-  }
+  // const inputChange = (e) => {
+  //     e.preventDefault()
+  //     const hourId = availableHours.find(i => i._id === e.target.id);
+  //     const newGuests = parseInt(e.target.value)
+  //     hourId.guests = newGuests
+  //     const newAvailableHours = {
+  //       ...availableHours
+  //     }
+  //     setAvailableHours(Object.values(newAvailableHours))
+  // }
   const deleteInput = (e) => {
     const hourId = availableHours.find(i => i._id === e.target.id);
     const newAvailableHours = availableHours.filter(i => !(i === hourId));
@@ -139,7 +139,8 @@ const AdminSpecialReservation = () => {
         'POST',
         JSON.stringify({
           hour: formState.inputs.hour.value,
-          guests: formState.inputs.guests.value
+          guests: 5
+          // guests: formState.inputs.guests.value
         }),
         {
           Authorization: 'Bearer ' + auth.token,
@@ -164,19 +165,19 @@ const AdminSpecialReservation = () => {
         return (
             <div key={id}>
               <p>
-                <span style={{color: "black", fontWeight: "bold"}}>Godzina {i.hour}:00 - </span>
-                <span style={{color: "black", fontWeight: "bold"}}>Liczba gości:</span>
-              <input
+                <span style={{color: "black", fontWeight: "bold"}}>{i.hour}:00 </span>
+                {/* <span style={{color: "black", fontWeight: "bold"}}>Liczba gości:</span> */}
+              {/* <input
                 style={{margin: "0 1em", width: "10%", textAlign: "center"}}
                 type="number"
                 id={i._id}
                 value={availableHours[id].guests}
                 onChange={inputChange}
-                ></input>
+                ></input> */}
                 <span 
                 id={i._id}
                 class="fas fa-times" 
-                style={{cursor: 'pointer'}} 
+                style={{cursor: 'pointer', marginLeft: '1em'}} 
                 onClick={deleteInput}
                 ></span>
               </p>
@@ -214,7 +215,7 @@ const AdminSpecialReservation = () => {
                 errorText="Wprowadź poprawną godzinę."
                 onInput={inputHandler}
                 ></Input>
-                <Input
+                {/* <Input
                 id="guests"
                 element="input"
                 type="number"
@@ -222,7 +223,7 @@ const AdminSpecialReservation = () => {
                 validators={[VALIDATOR_REQUIRE()]}
                 errorText="Wprowadź poprawną liczbę gości."
                 onInput={inputHandler}
-                ></Input>
+                ></Input> */}
                 <Button 
                  type="submit"
                  disabled={!formState.isValid}
@@ -233,7 +234,7 @@ const AdminSpecialReservation = () => {
             </React.Fragment>
             </Modal>
 
-            <h2>Zaktualizuj liczbę gości</h2>
+            <h2 onClick={() => console.log(availableHours)}>Zaktualizuj dzień i godzinę</h2>
                 {reservation.length > 0 && <Input 
                     id="name"
                     element="select"
@@ -245,6 +246,7 @@ const AdminSpecialReservation = () => {
                     options={setDaysOptions}
                 />}
                 {reservationDay && <div>
+                  <p style={{color: "black", fontWeight: "bold"}}>Dostępne godziny:</p>
                 {setInputs}
                 <Button 
                 onClick={openModalHandler}

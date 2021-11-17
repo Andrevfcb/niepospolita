@@ -13,8 +13,9 @@ const Success = () => {
         <React.Fragment>
         <ErrorModal error={error} onClear={clearError} />
         {isLoading && <LoadingSpinner asOverlay />}
-        <div className="store">
-            <h1 style={{marginTop: "1.5em"}}>REZERWACJA ZOSTAŁA DOKONANA</h1>
+        <div className="store reservation">
+            {/* <h1 style={{marginTop: "1.5em"}}>REZERWACJA ZOSTAŁA DOKONANA</h1> */}
+            <h2 style={{marginTop: "5em"}}>Rezerwacja została przyjęta, czekamy na Państwa z niecierpliwością</h2>
             <h4 style={{marginTop: "1.5em"}}>Dane dotyczące rezerwacji zostały wysłane na adres email.</h4>
             <br />
             <Link to='/'><p>powrót do sklepu</p></Link>
