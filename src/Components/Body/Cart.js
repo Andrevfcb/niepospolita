@@ -152,7 +152,7 @@ const Cart = () => {
                 onChange={changeBonusItem}
                 onClick={() => addBonusItem(item)}
                 checked={item._id === (bonusItemCheckedId || (bonusItem && bonusItem.id))} 
-                style={{display: 'block', margin: 'auto', marginTop: '1em'}} />
+                style={{display: 'block', margin: 'auto', marginTop: '0.5em'}} />
             </div>
             
         </li>
@@ -176,6 +176,7 @@ const Cart = () => {
                     <span className='item-name'>Produkt</span>
                     <span className='item-quantity-title'>Ilość</span>
                     <span className='item-price-title'>Cena</span>
+                    <span className='item-remove-title'></span>
             </li>
                 {showCartItems}
             <li className="item-card summary ">
