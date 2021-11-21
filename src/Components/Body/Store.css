@@ -138,6 +138,10 @@
         width: initial;
         margin: 1.2em 1em;
     }
+
+    .store .item-card:hover {
+        transform: scale(1);
+    }
 }
 
 @media (max-width: 500px) {

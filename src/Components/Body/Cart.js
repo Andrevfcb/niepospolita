@@ -187,7 +187,7 @@ const Cart = () => {
             <li className="item-card__alert">
                     <span>{!orderValid.valid && minOrderValue && <p style={{marginRight: '1em'}}>{orderValid.message}</p>}</span>
             </li>
-            {total.toFixed(2) > minBonusItemsPrice && <div>
+            {total.toFixed(2) > minBonusItemsPrice && orderValid.valid && <div>
                 <h3>Wybierz produkt gratis</h3>
                 <div className="bonus">
                 {showBonusItems}
