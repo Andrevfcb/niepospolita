@@ -113,16 +113,25 @@
 .admin-items__list li .admin-items__list-info {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .admin-items__list li span {
     padding: 0 0.5em;
     color: white;
-    border-left: 1px solid black;
+    /* border-left: 1px solid black; */
 }
 
 .admin-items__list li span span {
     border-left: none;
+}
+
+.admin .admin-items__list-info button {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0.2em 0.5em;
+    font-size: 0.9em;
+    margin-left: 0.5em;
 }
 
 @media (max-width: 600px) {
