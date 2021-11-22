@@ -7,17 +7,46 @@
 .admin-navigation {
     padding-top: 3em;
     padding-right: 3em;
-    font-size: 2em;
+    font-size: 1.5em;
     border-right: 2px solid black;
     background: url("https://i.pinimg.com/originals/c7/d6/44/c7d6443c3e206f73ff8c105b5e7d1abb.jpg");
 }
 
-.admin-navigation li {
+.half {
+    display: none;
+    height: 100%;
+  }
+
+.admin-side-navigation {
+    display: none;
+    padding-top: 15em;
+    padding-right: 0.5em;
+    font-size: 1.5em;
+    border-right: 2px solid black;
+    /* background: url("https://i.pinimg.com/originals/c7/d6/44/c7d6443c3e206f73ff8c105b5e7d1abb.jpg"); */
+    background-color: #b39809;
+    cursor: pointer;
+    box-shadow: 0 0 0.2em;
+    color: black;
+}
+
+.admin-side-navigation:hover {
+    padding-right: 0.7em;
+}
+
+.admin-side-navigation p {
+    margin-left: 0.5em;
+    font-weight: bold;
+}
+
+.admin-navigation li,
+.admin-side-navigation li {
     margin: 1em 0;
     cursor: pointer;
 }
 
-.admin-navigation li:hover {
+.admin-navigation li:hover,
+.admin-side-navigation li:hover {
     color: black;
 }
 
@@ -58,4 +87,73 @@
 
 .new-hour .form-control input {
     width: 10%;
+}
+
+.admin-items__list {
+    list-style: none;
+    text-align: start;
+    padding: 0;
+}
+
+.admin-items__list li {
+    display: flex;
+    align-items: center;
+    margin: 0.5em;
+    /* flex-wrap: wrap; */
+}
+
+.admin-items__list li img {
+    width: 6em;
+    max-height: 6em;
+    object-fit: cover;
+    border-radius: 5px;
+    /* box-shadow: 0 0 0.2em; */
+}
+
+.admin-items__list li .admin-items__list-info {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.admin-items__list li span {
+    padding: 0 0.5em;
+    color: white;
+    border-left: 1px solid black;
+}
+
+.admin-items__list li span span {
+    border-left: none;
+}
+
+@media (max-width: 600px) {
+    .full {
+        display: none;
+      }
+
+    .half {
+        display: block;
+      }
+
+      .admin-side-navigation {
+          display: block;
+          position: fixed;
+          height: 100%;
+      }
+
+      .admin-content {
+        padding-top: 15em;
+        padding-left: 4em;
+    }
+
+    .admin-content h2 {
+        font-size: 1.5em;
+    }
+
+    .admin-items__list li span {
+        border-left: none;
+    }
+
+    .admin select {
+        width: 50%;
+    }
 }

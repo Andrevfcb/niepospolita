@@ -1,5 +1,6 @@
 .admin-header {
     display: flex;
+    flex-wrap: wrap;
     width: 100vw;
     height: 5em;
     position: fixed;
@@ -11,6 +12,9 @@
 
 .admin-header form {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .admin-header form div {
@@ -23,3 +27,35 @@
     min-height: 0;
     margin: 0;
 }
+
+@media (max-width: 600px) {
+    .admin-header {
+        height: 15em;
+    }
+
+    .admin-header form div {
+        margin: 0;
+        width: 100%;
+        margin-left: 0.5em;
+        margin-top: 0.5em;
+    }
+
+    .admin-header form button {
+        font-size: 1em;
+        padding: 0.5em;
+        margin-top: 0.5em;
+        height: fit-content;
+    }
+
+    .admin-header .form-control input
+    {
+        margin: 0;
+        margin-left: 0.5em;
+    }
+
+    .admin-navigation {
+        padding-top: 7em;
+    }
+    
+}
+
