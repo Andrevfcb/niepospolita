@@ -50,13 +50,13 @@ const AdminPanel = () => {
                 <div className="admin-content">
                 {section === "0" && <AdminItems />}
                 {section === "1" && <AdminAddItem />}
-                {section === "2" && <AdminUpdateItem />}
-                {section === "3" && <AdminDeleteItem />}
-                {section === "4" && <AdminCategory />}
-                {section === "5" && <AdminValue />}
-                {section === "6" && <AdminDelivery />}
-                {section === "7" && <AdminBonus />}
-                {section === "8" && <AdminSpecialReservation />}
+                {/* {section === "2" && <AdminUpdateItem />} */}
+                {section === "2" && <AdminDeleteItem />}
+                {section === "3" && <AdminCategory />}
+                {section === "4" && <AdminValue />}
+                {section === "5" && <AdminDelivery />}
+                {section === "6" && <AdminBonus />}
+                {section === "7" && <AdminSpecialReservation />}
                 </div>
             </div>
         </React.Fragment>

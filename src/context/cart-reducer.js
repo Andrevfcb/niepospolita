@@ -54,7 +54,31 @@ const cartReducer = (state, action) => {
                 cartItems: [...state.cartItems],
                 ...sumItems(state.cartItems),
                 bonusItem
-            }   
+            }
+        case 'ADD_TIP':
+            const tip = {
+                id: action.payload._id,
+                item: action.payload.name,
+                quantity: 1,
+                // price: action.payload.price
+                price: parseFloat(action.payload.price)
+            }
+        return {
+                ...state,
+                cartItems: [...state.cartItems],
+                ...sumItems(state.cartItems),
+                tip
+            } 
+        case 'REMOVE_TIP':
+            // const filteredCartItems = state.cartItems.filter(item => item.id === action.payload.id);
+            // state.tip.remove()
+        return {
+                ...state,
+                // cartItems: [filteredCartItems],
+                cartItems: [...state.cartItems],
+                ...sumItems(state.cartItems),
+                tip: false
+            }  
         default:
                 return state;
     }

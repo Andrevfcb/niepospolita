@@ -38,7 +38,7 @@ const Order = () => {
     let history = useHistory();
     
     const { today, dayId, currentHour, currentMinute } = useDate();
-    const { cartItems, total, bonusItem } = useContext(CartContext);
+    const { cartItems, total, bonusItem, tip } = useContext(CartContext);
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -232,6 +232,17 @@ const Order = () => {
                             name: bonusItem.item + " gratis"
                         }}})
             }
+            if (tip) {
+                const price = parseFloat((tip.price * 100).toFixed(2))
+                line_items.push({
+                    quantity: 1,
+                    price_data: {
+                        currency: "pln",
+                        unit_amount: price,
+                        product_data: {
+                            name: tip.item
+                        }}})
+            }
         }
         
         let address = {
@@ -243,7 +254,7 @@ const Order = () => {
         if (!!formState.inputs.apartament.value) {
             address = {
                 ...address,
-                apartament: formState.inputs.apartament.value
+                apartament: `/ ${formState.inputs.apartament.value}`
             }
         } else {
             address = {
@@ -297,6 +308,11 @@ const Order = () => {
             if(bonusItem && total > minBonusItemsPrice ) {
                 bonusItemName = bonusItem.item
             }
+            let tipValue = 'brak'
+            if (tip) {
+                tipValue = tip.price.toFixed(2)
+                totalAmount = (totalAmount + tip.price).toFixed(2)
+            }
             
             try { 
                 await sendRequest(
@@ -311,6 +327,7 @@ const Order = () => {
                         total: totalAmount,
                         delivery_info,
                         bonusItemName,
+                        tip: tipValue,
                         timepickerValue,
                         paymentMethod,
                         option: 'order'

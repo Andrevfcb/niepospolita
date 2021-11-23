@@ -35,7 +35,7 @@ const Button = props => {
       onClick={props.onClick}
       disabled={props.disabled}
       id={props.id || null}
-      name={props.payment || null}
+      name={props.payment || props.option || null}
       value={props.id}
     >
       {props.children}

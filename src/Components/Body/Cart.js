@@ -8,6 +8,12 @@ import ErrorModal from "../UIElements/ErrorModal";
 import { CartContext } from '../../context/cart-context';
 import Card from '../UIElements/Card';
 import { Link } from 'react-router-dom';
+import { useForm } from "../hooks/form-hook"
+import {
+    VALIDATOR_REQUIRE,
+    VALIDATOR_MIN
+  } from '../util/validators';
+  import Input from '../FormElements/Input';
 
 const Cart = () => {
 
@@ -19,8 +25,12 @@ const Cart = () => {
     const [minBonusDeliveryPrice, setMinBonusDeliveryPrice] = useState(false);
     const [minBonusItemsPrice, setMinBonusItemsPrice] = useState(false);
     const [bonusItemCheckedId, setBonusItemCheckedId] = useState(false);
+    const [tipIsClicked, setTipIsClicked] = useState({
+        constant: false,
+        own: false
+    });
     const [bonusItems, setBonusItems] = useState([]);
-    const { cartItems, removeProduct, increase, decrease, total, addBonusItem, bonusItem } = useContext(CartContext);
+    const { cartItems, removeProduct, increase, decrease, total, addBonusItem, bonusItem, addTip, removeTip, tip } = useContext(CartContext);
     const { today, dayId, currentHour, currentMinute } = useDate();
 
     useEffect(() => {
@@ -116,12 +126,80 @@ const Cart = () => {
             )
     }, [cartItems, deliveryHours, today, dayId, currentHour, currentMinute, total, minOrderValue])
 
+    useEffect(() => {
+        setTipIsClicked({
+            constant: false,
+            own: false
+        })
+        removeTip()
+    }, [orderValid.valid, total])
+
+    const [formState, inputHandler] = useForm(
+        {
+            tip: {
+                value: '',
+                isValid: false
+        }
+        },
+        false
+      );
+
     const checkProductQuantity = (quantity, product) => {
         if(quantity <= 0) removeProduct(product)
     }
 
     const changeBonusItem = (e) => {
         setBonusItemCheckedId(e.target.id)
+    }
+
+    const tipButtonHandler = (e) => {
+        e.preventDefault()
+        let newTipIsClicked
+        
+        // console.log(e.target.name);
+        if (e.target.name === "10%")
+        {
+            if (tipIsClicked.constant) {
+                removeTip()
+                newTipIsClicked = {
+                    constant: false,
+                    own: false
+                }
+            } else {
+                newTipIsClicked = {
+                    constant: true,
+                    own: false
+                }
+                addTip({
+                _id: 'tip',
+                name: 'napiwek 10%',
+                price: (total * 0.1).toFixed(2)
+            })
+            }
+        }
+        else if (e.target.name === "own")
+        {
+            if (tipIsClicked.own) {
+            removeTip()
+            newTipIsClicked = {
+                constant: false,
+                own: false
+            }
+        } else {
+            newTipIsClicked = {
+                constant: false,
+                own: true
+            }
+            addTip({
+            _id: 'tip',
+            name: 'napiwek',
+            price: parseFloat(formState.inputs.tip.value).toFixed(2)
+        })
+        }
+    }
+        console.log(newTipIsClicked);
+        
+        setTipIsClicked(newTipIsClicked)
     }
 
     const showCartItems = cartItems.map(item => {
@@ -163,7 +241,10 @@ const Cart = () => {
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="cart">
-                <h1>Twój koszyk</h1>
+                <h1
+                onClick={() => console.log(bonusItem, tip, cartItems)
+                }
+                >Twój koszyk</h1>
                 {cartItems.length > 0 &&<div className="cart-info">
                     <p>Koszt dowozu: <b>{deliveryPrice && deliveryPrice} zł</b>, w przypadku dowozu poza Lublin koszt obliczany wg odległości.</p>
                     <p>Cena produktów zawiera koszt opakowania jednorazowego</p>
@@ -187,6 +268,34 @@ const Cart = () => {
             <li className="item-card__alert">
                     <span>{!orderValid.valid && minOrderValue && <p style={{marginRight: '1em'}}>{orderValid.message}</p>}</span>
             </li>
+            {orderValid.valid && <li className="item-card tip">
+                <Button
+                size='small'
+                option='10%'
+                active={tipIsClicked.constant}
+                onClick={tipButtonHandler}
+                >Zostaw napiwek 10%</Button>
+                <span>lub</span>
+                <div>
+                <Input 
+                    id="tip"
+                    element="input"
+                    type="number"
+                    label="Wprowadź kwotę napiwku:"
+                    validators={[VALIDATOR_REQUIRE(), VALIDATOR_MIN(1)]}
+                    errorText="Wprowadź poprawną kwotę."
+                    onInput={inputHandler}
+                /> zł
+                <Button
+                size='small'
+                option='own'
+                id='own'
+                active={tipIsClicked.own}
+                onClick={tipButtonHandler}
+                disabled={!formState.isValid}
+                >Zostaw napiwek</Button>
+                </div>
+            </li>}
             {total.toFixed(2) > minBonusItemsPrice && orderValid.valid && <div>
                 <h3>Wybierz produkt gratis</h3>
                 <div className="bonus">
