@@ -283,11 +283,12 @@ const Order = () => {
                 apartament: false
             }
         }
-        let message
+        
+        let orederMessage
         if (!!formState.inputs.message.value) {
-            message = formState.inputs.message.value
+            orederMessage = formState.inputs.message.value
         } else {
-            message = 'brak'
+            orederMessage = 'brak'
         }
         if (event.target.id === "payment-online" && !isToLateToOrder) {
             try {
@@ -297,11 +298,13 @@ const Order = () => {
                     JSON.stringify({
                         line_items,
                         customer_email: formState.inputs.email.value,
-                        message,
+                        message: orederMessage,
                         deliveryHour: timepickerValue.toString(),
                         phone: formState.inputs.phoneNumber.value,
                         address,
                         productName: '',
+                        startHour: message,
+                        deliveryTime,
                         option: 'order'
                     }),
                     {
@@ -344,13 +347,15 @@ const Order = () => {
                         customer_phoneNumber: formState.inputs.phoneNumber.value,
                         customer_address: address,
                         customer_items,
-                        message,
+                        message: orederMessage,
                         total: totalAmount,
                         delivery_info,
                         bonusItemName,
                         tip: tipValue,
                         timepickerValue,
                         paymentMethod,
+                        startHour: message,
+                        deliveryTime,
                         option: 'order'
                     }),
                     {

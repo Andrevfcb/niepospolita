@@ -259,6 +259,8 @@ const SpecialReservation = () => {
                             phone: formState.inputs.phone.value,
                             address,
                             productName,
+                            startHour: '',
+                            deliveryTime: '',
                             option: 'reservation'
                         }),
                         {
@@ -286,6 +288,8 @@ const SpecialReservation = () => {
                             timepickerValue: '',
                             paymentMethod: '',
                             message,
+                            startHour: '',
+                            deliveryTime: '',
                             option: 'reservation'
                         }),
                         {
