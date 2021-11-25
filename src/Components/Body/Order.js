@@ -29,9 +29,12 @@ const Order = () => {
     const [minTime, setMinTime] = useState();
     const [maxTime, setMaxTime] = useState();
     const [isToLateToOrder, setIsToLateToOrder] = useState(false);
+    const [isToEarlyToOrder, setIsToEarlyToOrder] = useState(false);
+    const [message, setMessage] = useState('');
     const [paymentOffline, setPaymentOffline] = useState(false);
     const [minBonusDeliveryPrice, setMinBonusDeliveryPrice] = useState(false);
     const [minBonusItemsPrice, setMinBonusItemsPrice] = useState(false);
+    const [deliveryTime, setDeliveryTime] = useState(false);
 
     const [deliveryHours, setDeliveryHours] = useState(false);
     const stripe = useStripe();
@@ -79,6 +82,15 @@ const Order = () => {
                       setMinBonusDeliveryPrice(responseData.bonus_delivery_price.value);
                 } catch (err) {}
             }
+            const fetchDeliveryTime = async () => {
+                try {
+                  const responseData = await sendRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/deliverytime/${process.env.REACT_APP_DELIVERY_TIME_ID}`
+                  );
+                  setDeliveryTime(responseData.deliveryTime.time);
+            } catch (err) {} 
+            };
+            fetchDeliveryTime();
             getDeliveryPrice()
             getDeliveryHours()
             getBonusItemsPrice()
@@ -135,6 +147,15 @@ const Order = () => {
 
             if(currentHour >= endHour || (currentHour === (endHour - 1) && (currentMinute > endMinute )) ) {
                 setIsToLateToOrder(true)
+            }
+
+            if (currentHour < startHour || (currentHour === startHour && currentMinute < startMinute)) {
+                setIsToEarlyToOrder(true)
+            }
+        
+            if (deliveryHours && today && dayId) {
+            const newMessage = `${startHour < 10 ? '0' + startHour : startHour}:${startMinute}`
+            setMessage(newMessage)
             }
         }
             if(minOrderTime && maxOrderTime) {
@@ -366,6 +387,10 @@ const Order = () => {
         <ErrorModal error={error} onClear={clearError} />
         <div className="order">
                 <h1>Uzupełnij dane do zamówienia</h1>
+                {isToEarlyToOrder && <div>
+                    <p style={{color: 'red', marginBottom: '1em', fontWeight: 'bold'}}>* Zamówienia zostaną zrealizowane od godziny {message}</p>
+                    <p style={{color: 'red', marginBottom: '1em', fontWeight: 'bold'}}>* Czas dowozu {deliveryTime} min.</p>
+                </div>}
                 <Card>
                 {!isToLateToOrder &&  
                 <form

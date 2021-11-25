@@ -241,10 +241,7 @@ const Cart = () => {
         {isLoading && <LoadingSpinner asOverlay />}
         <ErrorModal error={error} onClear={clearError} />
         <div className="cart">
-                <h1
-                onClick={() => console.log(bonusItem, tip, cartItems)
-                }
-                >Twój koszyk</h1>
+                <h1>Twój koszyk</h1>
                 {cartItems.length > 0 &&<div className="cart-info">
                     <p>Koszt dowozu: <b>{deliveryPrice && deliveryPrice} zł</b>, w przypadku dowozu poza Lublin koszt obliczany wg odległości.</p>
                     <p>Cena produktów zawiera koszt opakowania jednorazowego</p>
